@@ -8,6 +8,7 @@ import android.widget.GridView;
 import com.hejunlin.superindicatorlibray.CircleIndicator;
 import com.hejunlin.superindicatorlibray.LoopViewPager;
 import com.project.fanyuzeng.niubilityvideoplayer.R;
+import com.project.fanyuzeng.niubilityvideoplayer.activity.DetailListActivity;
 import com.project.fanyuzeng.niubilityvideoplayer.adapter.HomeChannelAdapter;
 import com.project.fanyuzeng.niubilityvideoplayer.adapter.HomePicAdapter;
 
@@ -55,6 +56,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 // TODO: 2017/9/22  跳历史记录
                 break;
             default:
+                DetailListActivity.lunchDetailList(getActivity(), position+1);
                 break;
         }
     }

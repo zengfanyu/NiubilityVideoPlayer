@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.project.fanyuzeng.niubilityvideoplayer.R;
+
 /**
  * Created by fanyuzeng on 2017/9/21.
  * Function:
@@ -34,14 +36,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setSupportActionBar() {
-        if (mToolbar!=null){
+        mToolbar=bindViewId(R.id.id_tool_bar);
+        if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }
     }
 
-    protected void setActionBarIcon(int resId){
-        if (mToolbar!=null){
+    protected void setActionBarIcon(int resId) {
+        if (mToolbar != null) {
             mToolbar.setNavigationIcon(resId);
         }
+    }
+
+    protected void setSupportArrowActionBar(boolean isSupport) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(isSupport);
     }
 }

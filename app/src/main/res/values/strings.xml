@@ -26,5 +26,8 @@
     <string name="channel_live">直播</string>
     <string name="channel_favorite">收藏</string>
     <string name="channel_history">历史记录</string>
+    <string name="site_letv">乐视视频</string>
+    <string name="site_sohu">搜狐视频</string>
+    <string name="data_file_tip">加载数据失败，请检查网络</string>
 
 </resources>

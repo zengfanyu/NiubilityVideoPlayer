@@ -34,7 +34,6 @@ public class HomeActivity extends BaseActivity {
 
         mDrawerLayout = bindViewId(R.id.id_drawer_layout);
         mNavigationView = bindViewId(R.id.id_navigation_view);
-        mToolbar = bindViewId(R.id.id_tool_bar);
 
         //设置Toolbar
         setSupportActionBar();
