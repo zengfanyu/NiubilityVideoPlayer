@@ -5,12 +5,23 @@
               android:gravity="center"
               android:orientation="vertical">
 
+
+    <com.project.fanyuzeng.niubilityvideoplayer.widget.PullLoadRecyclerView
+        android:id="@+id/id_pull_load_recycler_view"
+        android:scrollbars="none"
+        android:padding="@dimen/dimen_4dp"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <TextView
         android:id="@+id/id_tv_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/data_file_tip"
+        android:text="@string/data_failed_tip"
         android:textSize="@dimen/dimen_32dp"/>
+
+
 
 
 </LinearLayout>

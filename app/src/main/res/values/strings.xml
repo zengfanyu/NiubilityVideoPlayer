@@ -28,6 +28,9 @@
     <string name="channel_history">历史记录</string>
     <string name="site_letv">乐视视频</string>
     <string name="site_sohu">搜狐视频</string>
-    <string name="data_file_tip">加载数据失败，请检查网络</string>
+
+    <string name="data_failed_tip">数据加载失败,请检查网络!</string>
+    <string name="load_more_text">正在加载新数据...</string>
+    <string name="no_date_text">暂时没有数据...</string>
 
 </resources>
