@@ -57,7 +57,7 @@ public class HomeChannelAdapter extends BaseAdapter {
         int id = chanel.getChannelId();
         int imgResId = -1;
         switch (id) {
-            case ChannelMode.SHOW:
+            case ChannelMode.SERIES:
                 imgResId = R.drawable.ic_show;
                 break;
             case ChannelMode.MOVIE:

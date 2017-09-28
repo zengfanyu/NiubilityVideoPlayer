@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public class ChannelMode implements Serializable {
 
-    public static final int SHOW = 1;//电视剧
+    public static final int SERIES = 1;//电视剧
     public static final int MOVIE = 2;//电影
     public static final int COMIC = 3;//动漫
     public static final int DOCUMENTRY = 4;//纪录片
@@ -31,7 +31,7 @@ public class ChannelMode implements Serializable {
         this.channelId = channelId;
         mContext = context;
         switch (channelId) {
-            case SHOW:
+            case SERIES:
                 channelName = mContext.getResources().getString(R.string.channel_series);
                 break;
             case MOVIE:

@@ -127,7 +127,7 @@ public class SohuApi extends BaseSiteAPI {
     private int toConvertChannelId(ChannelMode channelMode) {
         int channelId = -1;//-1 无效值
         switch (channelMode.getChannelId()) {
-            case ChannelMode.SHOW:
+            case ChannelMode.SERIES:
                 channelId = SOHU_CHANNELID_SERIES;
                 break;
             case ChannelMode.MOVIE:
