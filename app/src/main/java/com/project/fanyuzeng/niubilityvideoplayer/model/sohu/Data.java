@@ -1,6 +1,7 @@
 package com.project.fanyuzeng.niubilityvideoplayer.model.sohu;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class Data {
     @Expose
     private int count;
     @Expose
+    @SerializedName("videos")
     private List<ResultAlbum> mResultAlbumList;
 
     public int getCount() {

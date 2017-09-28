@@ -1,7 +1,6 @@
 package com.project.fanyuzeng.niubilityvideoplayer.api;
 
 import com.google.gson.annotations.Expose;
-import com.project.fanyuzeng.niubilityvideoplayer.AppManager;
 import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
 
 /**
@@ -33,7 +32,7 @@ public class ErrorInfo {
     String url;
 
     public ErrorInfo(int siteId,int type){
-        mSiteMode=new SiteMode(siteId, AppManager.getContext());
+        mSiteMode=new SiteMode(siteId);
 
     }
 

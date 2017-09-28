@@ -44,7 +44,7 @@ public class SitePagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Log.i(TAG, "getItem " + position);
-        return DetailListFragment.newInstance(new SiteMode( 1, mContext).getSiteId(), mChannelId);
+        return DetailListFragment.newInstance(position+1, mChannelId);
     }
 
     @Override

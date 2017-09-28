@@ -15,8 +15,7 @@ public class okHttpUtils {
 
     public static Request buildRequest(String url) {
         if (NetWorkUtils.isNetWorkAvaliable()) {
-            Request request = new Request.Builder().tag(REQUEST_TAG).url(url).build();
-            return request;
+            return new Request.Builder().tag(REQUEST_TAG).url(url).build();
         } else {
             return null;
         }

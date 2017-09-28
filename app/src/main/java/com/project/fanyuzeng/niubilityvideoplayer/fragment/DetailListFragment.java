@@ -4,10 +4,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.adapter.DetailListAdapter;
+import com.project.fanyuzeng.niubilityvideoplayer.api.ErrorInfo;
+import com.project.fanyuzeng.niubilityvideoplayer.api.SiteApi;
+import com.project.fanyuzeng.niubilityvideoplayer.api.onGetChannelAlbumListener;
+import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
+import com.project.fanyuzeng.niubilityvideoplayer.model.AlbumList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
 import com.project.fanyuzeng.niubilityvideoplayer.widget.PullLoadRecyclerView;
 
@@ -17,16 +23,19 @@ import com.project.fanyuzeng.niubilityvideoplayer.widget.PullLoadRecyclerView;
  */
 
 public class DetailListFragment extends BaseFragment {
+    private static final String TAG = "DetailListFragment";
     private static int sSiteId;
     private static int sChannelId;
     public static final String CHANNEL_ID = "channelId";
-    public static final String SIET_ID = "siteId";
+    public static final String SITE_ID = "siteId";
     public static final int REFRESH_DURAION = 1500;
     public static final int LOADMORE_DURAION = 3000;
     private PullLoadRecyclerView mRecyclerView;
     private TextView mTvEmpty;
     private DetailListAdapter mAdapter;
     Handler mHandler = new Handler(Looper.getMainLooper());
+    private int mPageSize = 20;
+    private int mPageNo = 0;
 
     public DetailListFragment() {
     }
@@ -38,7 +47,7 @@ public class DetailListFragment extends BaseFragment {
         sChannelId = channelId;
         Bundle bundle = new Bundle();
         bundle.putInt(CHANNEL_ID, sChannelId);
-        bundle.putInt(SIET_ID, sSiteId);
+        bundle.putInt(SITE_ID, sSiteId);
         detailListFragment.setArguments(bundle);
         return detailListFragment;
     }
@@ -46,6 +55,10 @@ public class DetailListFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null ) {
+            sSiteId = getArguments().getInt(SITE_ID);
+            sChannelId = getArguments().getInt(CHANNEL_ID);
+        }
         loadMoreData(); //一进来首先加载第一屏数据
         mAdapter = new DetailListAdapter();
         if (sSiteId == SiteMode.LETV) {
@@ -101,6 +114,20 @@ public class DetailListFragment extends BaseFragment {
 
     private void loadMoreData() {
         // TODO: 2017/9/25 请求接口加载数据
+        Log.d(TAG,"loadMoreData " + "channelId:"+sChannelId+"siteId:"+sSiteId);
+        mPageNo++;
+        SiteApi.onGetChannelAlbums(getActivity(), mPageNo, mPageSize, sSiteId, sChannelId, new onGetChannelAlbumListener() {
+            @Override
+            public void onGetChannelAlbumSuccess(AlbumList albumList) {
+                for (Album album : albumList) {
+                    Log.d(TAG, "onGetChannelAlbumSuccess " + album.toString());
+                }
+            }
+            @Override
+            public void onGetChannelAlbumFailed(ErrorInfo info) {
+
+            }
+        });
     }
 
 }
