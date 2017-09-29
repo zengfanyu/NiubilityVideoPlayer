@@ -12,7 +12,7 @@ public class ResultAlbum {
     //@SerializedName
     //表示将对象的属性跟json里的字段对应映射。
     //解决定义属性和json字段不一样的问题
-
+    //http://lm.tv.sohu.com/union/open_platform.do  API文档
     @SerializedName("album_desc")
     @Expose
     private String tvDesc; // 专辑描述

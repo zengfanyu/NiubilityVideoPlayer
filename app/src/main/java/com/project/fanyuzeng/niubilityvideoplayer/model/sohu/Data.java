@@ -11,6 +11,13 @@ import java.util.List;
  */
 
 public class Data {
+
+    /*
+    "data": {
+        "count": 2788,
+        "videos": []
+    }
+    */
     @Expose
     private int count;
     @Expose

@@ -8,6 +8,14 @@ import com.google.gson.annotations.Expose;
  */
 
 public class Result {
+    //http://lm.tv.sohu.com/union/open_platform.do
+    /*
+    * {
+        "status": 200,
+        "statusText": "OK",
+        "data": {}
+      }
+    * */
     @Expose
     private long status;
     @Expose
