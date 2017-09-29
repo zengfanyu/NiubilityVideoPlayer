@@ -124,7 +124,7 @@ public class DetailListFragment extends BaseFragment {
         mAdapter = null;
         if (mSiteId == SiteMode.SOHU) {
             mColumns = 3;
-        } else {
+        } else if (mSiteId==SiteMode.LETV){
             mColumns = 2;
         }
         mAdapter = new DetailListAdapter(getContext(), new ChannelMode(mChannelId, getActivity()));

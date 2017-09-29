@@ -25,8 +25,9 @@ public class ImageUtils {
                         .with(imageView.getContext())
                         .load(imgUrl)
                         .error(R.drawable.ic_loading_hor)
-                        .centerCrop()
+                        .fitCenter()
                         .override(height, width)
+//                        .override(width, height)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imageView);
 

@@ -1,6 +1,5 @@
 package com.project.fanyuzeng.niubilityvideoplayer.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,7 +24,6 @@ public class Album implements Parcelable {
     private String tip;//提示
     private boolean isCompleted;//是否更新完
     private String letvStyle;//letv独有
-    private Context context;
     public static final Parcelable.Creator<Album> CREATOR = new Creator<Album>() {
         @Override
         public Album createFromParcel(Parcel source) {
@@ -38,8 +36,7 @@ public class Album implements Parcelable {
         }
     };
 
-    public Album(int siteId, Context context) {
-        this.context = context;
+    public Album(int siteId) {
         site = new SiteMode(siteId);
     }
 
@@ -200,8 +197,7 @@ public class Album implements Parcelable {
                 ", site=" + site +
                 ", tip='" + tip + '\'' +
                 ", isCompleted=" + isCompleted +
-                ", letvStyle='" + letvStyle + '\'' +
-                ", context=" + context +
+                ", letvStyle='" + letvStyle  +
                 '}';
     }
 

@@ -13,6 +13,7 @@ public class ErrorInfo {
     public static final int ERROR_TYPE_URL=2;
     public static final int ERROR_TYPE_FATAL=3;
     public static final int ERROR_TYPE_DATA_CONVERT=4;
+    public static final int ERROR_TYPE_JSON_PARSE=5;
 
     @Expose
     int type;

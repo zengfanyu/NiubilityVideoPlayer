@@ -13,7 +13,7 @@ import okhttp3.Request;
 public class okHttpUtils {
     private static final String REQUEST_TAG = "okHttp";
 
-    public static Request buildRequest(String url) {
+    private static Request buildRequest(String url) {
         if (NetWorkUtils.isNetWorkAvaliable()) {
             return new Request.Builder().tag(REQUEST_TAG).url(url).build();
         } else {

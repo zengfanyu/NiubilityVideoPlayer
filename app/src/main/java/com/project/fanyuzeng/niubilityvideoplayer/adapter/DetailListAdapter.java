@@ -48,18 +48,32 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.It
             return;
         Album album = getItem(position);
         holder.mAlbumName.setText(album.getTitle());
-        if (album.getTip().isEmpty()){
+        if (album.getTip().isEmpty()) {
             holder.mAlbumTip.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.mAlbumTip.setText(album.getTip());
         }
-        Point posterSize = ImageUtils.getVerPosterSize(mContext, mColumns);
-        RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(posterSize.x,posterSize.y);
-        holder.mAlbumPoster.setLayoutParams(params);
-        if (album.getVerImgUrl()!=null){
-            ImageUtils.displayImage(holder.mAlbumPoster,album.getVerImgUrl(),posterSize.x,posterSize.y);
-        }else {
-            // TODO: 2017/9/28  
+        Point posterSize = null;
+        if (mColumns == 3) {
+            posterSize = ImageUtils.getVerPosterSize(mContext, mColumns);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(posterSize.x, posterSize.y);
+            holder.mAlbumPoster.setLayoutParams(params);
+
+        } else if (mColumns == 2) {
+            posterSize = ImageUtils.getHorPosterSize(mContext, mColumns);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(posterSize.x, posterSize.y);
+            holder.mAlbumPoster.setLayoutParams(params);
+
+        }
+
+        if (album.getVerImgUrl() != null) {
+            ImageUtils.displayImage(holder.mAlbumPoster, album.getVerImgUrl(), posterSize.x, posterSize.y);
+
+        } else if (album.getHorImgUrl() != null) {
+            ImageUtils.displayImage(holder.mAlbumPoster, album.getHorImgUrl(), posterSize.x, posterSize.y);
+
+        } else {
+            // TODO: 2017/9/29 默认图
         }
     }
 
