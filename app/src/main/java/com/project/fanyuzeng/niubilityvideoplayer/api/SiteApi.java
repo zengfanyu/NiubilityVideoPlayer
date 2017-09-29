@@ -15,10 +15,10 @@ public class SiteApi {
     public static void onGetChannelAlbums(Context context,int pageNo,int pageSize,int siteId, int channelId,onGetChannelAlbumListener listener){
         switch (siteId){
             case SiteMode.LETV:
-                new LetvAPI().onGetChannelAlbums(new ChannelMode(channelId,context),pageNo,pageSize,listener);
+                new LetvAPI().onGetChannelAlbums(new ChannelMode(channelId,context),pageNo,pageSize,listener,SiteMode.LETV);
                 break;
             case SiteMode.SOHU:
-                new SohuApi().onGetChannelAlbums(new ChannelMode(channelId,context),pageNo,pageSize,listener);
+                new SohuApi().onGetChannelAlbums(new ChannelMode(channelId,context),pageNo,pageSize,listener,SiteMode.SOHU);
                 break;
             default:
                 break;
