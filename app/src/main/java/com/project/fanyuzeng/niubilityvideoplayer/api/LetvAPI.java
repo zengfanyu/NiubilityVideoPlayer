@@ -79,6 +79,28 @@ public class LetvAPI extends BaseSiteAPI {
         }
     }
 
+    @Override
+    protected String getAlbumDetailUrl(Album album) {
+        // TODO: 2017/9/30
+        return null;
+    }
+
+    @Override
+    protected void parseAndMappingAlbumDetailDataFromResponse(Album album, Response response, onGetAlbumDetailListener listener) {
+        // TODO: 2017/9/30
+    }
+
+    @Override
+    protected String getAlbumVideoUrl(Album album, int pageNo, int pageSize) {
+        // TODO: 2017/9/30
+        return null;
+    }
+
+    @Override
+    protected void parseAndMappingAlbumVideoDataFromResponse(Album album, Response response, onGetAlbumVideoListener listener) {
+        // TODO: 2017/9/30
+    }
+
     /**
      * 自定义频道id与真实频道id的转换
      *

@@ -2,7 +2,9 @@ package com.project.fanyuzeng.niubilityvideoplayer.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,11 @@ import android.widget.Toast;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.R2;
+import com.project.fanyuzeng.niubilityvideoplayer.api.ErrorInfo;
+import com.project.fanyuzeng.niubilityvideoplayer.api.SiteApi;
+import com.project.fanyuzeng.niubilityvideoplayer.api.onGetAlbumDetailListener;
+import com.project.fanyuzeng.niubilityvideoplayer.fragment.AlbumPlayGridFragment;
+import com.project.fanyuzeng.niubilityvideoplayer.fragment.BaseFragment;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.utils.ImageUtils;
 
@@ -25,7 +32,7 @@ import butterknife.BindView;
  */
 
 public class AlbumDetailActivity extends BaseActivity {
-
+    private static final String TAG = "AlbumDetailActivity";
     @BindView(R2.id.id_iv_album)
     ImageView mAlbumPoster;
     @BindView(R2.id.id_tv_album_name)
@@ -48,6 +55,7 @@ public class AlbumDetailActivity extends BaseActivity {
     private int mVideoNo;
     private boolean mIsShowDesc;
     private boolean mIsFavor;
+    private BaseFragment mFragment;
 
     @Override
     protected void initViews() {
@@ -64,6 +72,34 @@ public class AlbumDetailActivity extends BaseActivity {
 
     @Override
     protected void initDatas() {
+        refreshInfoViews();
+        // TODO: 2017/9/30 处理此处siteId
+        SiteApi.onGetAlbumDetail(this, mAlbum, 1, new onGetAlbumDetailListener() {
+            @Override
+            public void onGetAlbumDetailsSuccess(final Album album) {
+                Log.i(TAG, "onGetAlbumDetailsSuccess " + album.getVideoTotle());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: 2017/9/30 处理此处initVideoPosition
+                        mFragment = AlbumPlayGridFragment.newInstance(album, mIsShowDesc, 0);
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.id_fragment_container,mFragment);
+                        transaction.commit();
+                        getFragmentManager().executePendingTransactions();
+                    }
+                });
+            }
+
+            @Override
+            public void onGetAlbumDetailFail(ErrorInfo info) {
+
+            }
+        });
+
+    }
+
+    private void refreshInfoViews() {
         mAlbumName.setText(mAlbum.getTitle());
         //导演
         if (!TextUtils.isEmpty(mAlbum.getDirector())) {
@@ -101,7 +137,6 @@ public class AlbumDetailActivity extends BaseActivity {
         } else {
             mAlbumTip.setVisibility(View.GONE);
         }
-
     }
 
     @Override

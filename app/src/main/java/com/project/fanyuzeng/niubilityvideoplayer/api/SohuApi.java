@@ -1,12 +1,18 @@
 package com.project.fanyuzeng.niubilityvideoplayer.api;
 
+import android.util.Log;
+
 import com.project.fanyuzeng.niubilityvideoplayer.AppManager;
+import com.project.fanyuzeng.niubilityvideoplayer.Constants;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.AlbumList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
 import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.DetailResult;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Result;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.ResultAlbum;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoList;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoResult;
 
 import java.io.IOException;
 
@@ -28,6 +34,29 @@ import static com.project.fanyuzeng.niubilityvideoplayer.Constants.API_SOHU.SOHU
 public class SohuApi extends BaseSiteAPI {
 
     private static final String TAG = "SohuApi";
+
+    @Override
+    protected String getAlbumDetailUrl(Album album) {
+        return Constants.API_SOHU.API_ALBUM_INFO + album.getAlbumId() + ".json?" + Constants.API_SOHU.API_KEY;
+    }
+
+    @Override
+    protected void parseAndMappingAlbumDetailDataFromResponse(Album album, Response response, onGetAlbumDetailListener listener) {
+        try {
+            DetailResult result = AppManager.getGson().fromJson(response.body().string(), DetailResult.class);
+            if (result.getResultAlbum() != null) {
+                if (result.getResultAlbum().getLastVideoCount() > 0) {
+                    album.setVideoTotle(result.getResultAlbum().getLastVideoCount());
+                } else {
+                    album.setVideoTotle(result.getResultAlbum().getTotalVideoCount());
+                }
+            }
+            if (listener != null)
+                listener.onGetAlbumDetailsSuccess(album);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected String getAlbumUrl(ChannelMode channelMode, int pageNo, int pageSize) {
@@ -61,6 +90,31 @@ public class SohuApi extends BaseSiteAPI {
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected String getAlbumVideoUrl(Album album, int pageNo, int pageSize) {
+
+        return String.format(Constants.API_SOHU.API_ALBUM_VIDOES_FORMAT, album.getAlbumId(), pageNo, pageSize);
+    }
+
+    @Override
+    protected void parseAndMappingAlbumVideoDataFromResponse(Album album, Response response, onGetAlbumVideoListener listener) {
+        try {
+            VideoResult result = AppManager.getGson().fromJson(response.body().string(), VideoResult.class);
+            if (result != null) {
+                Log.d(TAG, "parseAndMappingAlbumVideoDataFromResponse " + result.toString());
+            }
+            VideoList videoList = toConvertVideoList(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private VideoList toConvertVideoList(VideoResult result) {
+        // TODO: 2017/9/30 完成此处转换
+        return null;
+    }
+
 
     /**
      * 将从服务器获取的数据模型Result转换成需要的AlbumList

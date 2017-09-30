@@ -2,6 +2,7 @@ package com.project.fanyuzeng.niubilityvideoplayer.api;
 
 import android.text.TextUtils;
 
+import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
 import com.project.fanyuzeng.niubilityvideoplayer.utils.okHttpUtils;
 
@@ -17,7 +18,15 @@ import okhttp3.Response;
  */
 
 public abstract class BaseSiteAPI {
-
+    /**
+     * 请求专辑列表数据
+     *
+     * @param channelMode
+     * @param pageNo
+     * @param pageSize
+     * @param channelAlbumListener
+     * @param siteId
+     */
     protected void onGetChannelAlbums(ChannelMode channelMode, int pageNo, int pageSize, onGetChannelAlbumListener channelAlbumListener, int siteId) {
         String url = getAlbumUrl(channelMode, pageNo, pageSize);
         if (!TextUtils.isEmpty(url)) {
@@ -57,7 +66,112 @@ public abstract class BaseSiteAPI {
     }
 
     /**
-     * 通过channelMode pageNo pageSize，拼接出真实url地址的方法
+     * 请求专辑详情数据
+     *
+     * @param album
+     * @param listener
+     */
+    protected void onGetAlbumDetail(Album album, final onGetAlbumDetailListener listener) {
+        String url = getAlbumDetailUrl(album);
+        if (!TextUtils.isEmpty(url)) {
+            doGetAlbumDetailByUrl(album, url, listener);
+        }
+    }
+
+    private void doGetAlbumDetailByUrl(final Album album, final String url, final onGetAlbumDetailListener listener) {
+        okHttpUtils.execute(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (listener != null) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("doGetAlbumDetailByUrl")
+                            .setExceptionString(e.toString())
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetAlbumDetailFail(errorInfo);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("onResponse")
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetAlbumDetailFail(errorInfo);
+                    return;
+                }
+                parseAndMappingAlbumDetailDataFromResponse(album, response, listener);
+            }
+        });
+    }
+
+    /**
+     * 请求专辑视频数据
+     *
+     * @param album
+     * @param listener
+     */
+    protected void onGetAlbumVideo(Album album, int pageNo, int pageSize, onGetAlbumVideoListener listener) {
+        String url = getAlbumVideoUrl(album, pageNo, pageSize);
+        if (!TextUtils.isEmpty(url)) {
+            doGetAlbumVideoByUrl(album, url, listener);
+        }
+    }
+
+    private void doGetAlbumVideoByUrl(final Album album, final String url, final onGetAlbumVideoListener listener) {
+        okHttpUtils.execute(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (listener != null) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("doGetAlbumVideoByUrl")
+                            .setExceptionString(e.toString())
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetAlbumVideoFail(errorInfo);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("onResponse")
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetAlbumVideoFail(errorInfo);
+                    return;
+                }
+                parseAndMappingAlbumVideoDataFromResponse(album, response, listener);
+            }
+        });
+    }
+
+
+    /**
+     * 拼接Album视频 url
+     *
+     * @param album
+     * @return
+     */
+    protected abstract String getAlbumVideoUrl(Album album, int pageNo, int pageSize);
+
+
+    /**
+     * 拼接Album详细内容 url
+     *
+     * @return
+     */
+    protected abstract String getAlbumDetailUrl(Album album);
+
+    /**
+     * 拼接Album列表url
      *
      * @param channelMode
      * @param pageNo
@@ -67,12 +181,29 @@ public abstract class BaseSiteAPI {
     protected abstract String getAlbumUrl(ChannelMode channelMode, int pageNo, int pageSize);
 
     /**
-     * 使用okHttp访问真实url地址，返回的Response是successful之后，会执行的解析数据和映射数据的方法
+     * 使用okHttp访问url地址，解析Album详细数据，并且映射到实体类
+     *
+     * @param album
+     * @param response
+     * @param listener
+     */
+    protected abstract void parseAndMappingAlbumDetailDataFromResponse(Album album, Response response, onGetAlbumDetailListener listener);
+
+    /**
+     * 使用okHttp访问url地址，解析Album列表数据，并且映射到实体类
      *
      * @param response
      * @param listener
      */
     protected abstract void parseAndMappingDataFromResponse(Response response, onGetChannelAlbumListener listener);
 
+    /**
+     * 使用okHttp访问url地址，接续Album视频数据，并且映射到实体类中
+     *
+     * @param album
+     * @param response
+     * @param listener
+     */
+    protected abstract void parseAndMappingAlbumVideoDataFromResponse(Album album, Response response, onGetAlbumVideoListener listener);
 
 }
