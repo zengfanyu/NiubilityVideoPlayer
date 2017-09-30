@@ -28,6 +28,9 @@
         <activity android:name=".activity.DetailListActivity">
 
         </activity>
+        <activity android:name=".activity.AlbumDetailActivity">
+
+        </activity>
     </application>
 
 </manifest>

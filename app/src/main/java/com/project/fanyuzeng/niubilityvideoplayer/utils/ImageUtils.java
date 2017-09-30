@@ -18,6 +18,18 @@ public class ImageUtils {
     private static final float VER_POSTER_RATIO = 0.73f;
     private static final float HOR_POSTER_RATIO = 1.5f;
 
+    public static void displayImage(ImageView imageView, String imgUrl) {
+        if (imageView != null && imgUrl != null) {
+            Glide.with(imageView.getContext())
+                    .load(imgUrl)
+                    .error(R.drawable.ic_loading_hor)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+        }
+
+    }
+
     public static void displayImage(ImageView imageView, String imgUrl, int width, int height) {
         if (imageView != null && imgUrl != null && width > 0 && height > 0) {
             if (width > height) {

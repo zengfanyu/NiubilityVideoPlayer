@@ -82,7 +82,6 @@ public class DetailListFragment extends BaseFragment {
 
     @Override
     protected void initViews() {
-        // TODO: 2017/9/25  拿Bundle
         mTvEmpty = bindViewId(R.id.id_tv_empty);
         mTvEmpty.setText(getActivity().getResources().getString(R.string.load_more_text));
         mRecyclerView = bindViewId(R.id.id_pull_load_recycler_view);
@@ -136,7 +135,6 @@ public class DetailListFragment extends BaseFragment {
     }
 
     private void loadMoreData() {
-        // TODO: 2017/9/25 请求接口加载数据
         Log.d(TAG, "loadMoreData " + "channelId:" + mChannelId + "siteId:" + mSiteId);
         mPageNo++;
         SiteApi.onGetChannelAlbums(getActivity(), mPageNo, mPageSize, mSiteId, mChannelId, new onGetChannelAlbumListener() {

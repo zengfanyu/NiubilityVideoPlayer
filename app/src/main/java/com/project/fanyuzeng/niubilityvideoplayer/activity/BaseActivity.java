@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by fanyuzeng on 2017/9/21.
  * Function:
@@ -20,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
+        ButterKnife.bind(this);
         initViews();
         initDatas();
 
@@ -36,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setSupportActionBar() {
-        mToolbar=bindViewId(R.id.id_tool_bar);
+        mToolbar = bindViewId(R.id.id_tool_bar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
         }

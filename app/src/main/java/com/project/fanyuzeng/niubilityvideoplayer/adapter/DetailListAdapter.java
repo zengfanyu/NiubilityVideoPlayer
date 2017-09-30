@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
+import com.project.fanyuzeng.niubilityvideoplayer.activity.AlbumDetailActivity;
+import com.project.fanyuzeng.niubilityvideoplayer.activity.DetailListActivity;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.AlbumList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
@@ -46,7 +48,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.It
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         if (mAlbumList.size() <= 0)
             return;
-        Album album = getItem(position);
+        final Album album = getItem(position);
         holder.mAlbumName.setText(album.getTitle());
         if (album.getTip().isEmpty()) {
             holder.mAlbumTip.setVisibility(View.GONE);
@@ -75,6 +77,17 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.It
         } else {
             // TODO: 2017/9/29 默认图
         }
+        holder.mAlbumContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mChannelMode.getChannelId() == ChannelMode.DOCUMENTRY || mChannelMode.getChannelId() == ChannelMode.MOVIE
+                        || mChannelMode.getChannelId() == ChannelMode.VARIETY || mChannelMode.getChannelId() == ChannelMode.MUSIC) {
+                    AlbumDetailActivity.lunch((DetailListActivity) mContext, album, 0, true);
+                } else {
+                    AlbumDetailActivity.lunch((DetailListActivity) mContext, album);
+                }
+            }
+        });
     }
 
     @Override
@@ -106,7 +119,7 @@ public class DetailListAdapter extends RecyclerView.Adapter<DetailListAdapter.It
 
         ItemViewHolder(View itemView) {
             super(itemView);
-            mAlbumContainer = (LinearLayout) itemView.findViewById(R.id.id_indicator_container);
+            mAlbumContainer = (LinearLayout) itemView.findViewById(R.id.id_album_container);
             mAlbumPoster = (ImageView) itemView.findViewById(R.id.id_album_poster);
             mAlbumTip = (TextView) itemView.findViewById(R.id.id_album_tip);
             mAlbumName = (TextView) itemView.findViewById(R.id.id_album_name);

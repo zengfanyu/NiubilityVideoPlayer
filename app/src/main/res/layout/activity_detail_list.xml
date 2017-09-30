@@ -7,6 +7,10 @@
     <include
         layout="@layout/top_acitonbar"/>
 
+    <net.lucode.hackware.magicindicator.MagicIndicator
+        android:id="@+id/id_magic_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_40dp"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/id_view_pager"
