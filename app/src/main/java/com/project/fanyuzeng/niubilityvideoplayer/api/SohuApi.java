@@ -11,6 +11,7 @@ import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.DetailResult;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Result;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.ResultAlbum;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoResult;
 
@@ -103,16 +104,24 @@ public class SohuApi extends BaseSiteAPI {
             VideoResult result = AppManager.getGson().fromJson(response.body().string(), VideoResult.class);
             if (result != null) {
                 Log.d(TAG, "parseAndMappingAlbumVideoDataFromResponse " + result.toString());
+                VideoList videoList = new VideoList();
+                for (Video video : result.getData().getVideos()) {
+                    Video v = new Video();
+                    v.setHor_high_pic(video.getHor_high_pic());
+                    v.setVer_high_pic(video.getVer_high_pic());
+                    v.setVid(video.getVid());
+                    v.setVideo_name(video.getVideo_name());
+                    videoList.add(v);
+                }
+
+                if (listener != null) {
+                    listener.onGetAlbumVideoSuccess(videoList);
+                }
             }
-            VideoList videoList = toConvertVideoList(result);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private VideoList toConvertVideoList(VideoResult result) {
-        // TODO: 2017/9/30 完成此处转换
-        return null;
     }
 
 

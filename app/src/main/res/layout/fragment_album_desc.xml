@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <com.project.fanyuzeng.niubilityvideoplayer.widget.CustomGridView
+        android:id="@+id/id_gv_video_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="6"
+        android:choiceMode="singleChoice"
+        android:verticalSpacing="@dimen/dimen_8dp"
+        android:horizontalSpacing="@dimen/dimen_8dp"
+        android:stretchMode="columnWidth"/>
+
+    <TextView
+        android:id="@+id/id_tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_date_text"
+        android:textSize="@dimen/dimen_32dp"/>
 </FrameLayout>

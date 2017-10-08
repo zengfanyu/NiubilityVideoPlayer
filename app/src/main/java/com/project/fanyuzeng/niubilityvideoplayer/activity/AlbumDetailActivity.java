@@ -28,7 +28,7 @@ import butterknife.BindView;
 
 /**
  * Created by fanyuzeng on 2017/9/30.
- * Function:
+ * Function:某一电视剧或者电影或者BalaBala的详情页
  */
 
 public class AlbumDetailActivity extends BaseActivity {
@@ -62,7 +62,7 @@ public class AlbumDetailActivity extends BaseActivity {
         Intent intent = getIntent();
         mAlbum = intent.getParcelableExtra("album");
         mVideoNo = intent.getIntExtra("videoNo", 0);
-        mIsShowDesc = intent.getBooleanExtra("isShowDesc", true);
+        mIsShowDesc = intent.getBooleanExtra("isShowDesc", false);
 
         setSupportActionBar(); //表示当前页面支持ActionBar
         setTitle(mAlbum.getTitle());
@@ -84,7 +84,7 @@ public class AlbumDetailActivity extends BaseActivity {
                         // TODO: 2017/9/30 处理此处initVideoPosition
                         mFragment = AlbumPlayGridFragment.newInstance(album, mIsShowDesc, 0);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.id_fragment_container,mFragment);
+                        transaction.replace(R.id.id_fragment_container, mFragment);
                         transaction.commit();
                         getFragmentManager().executePendingTransactions();
                     }

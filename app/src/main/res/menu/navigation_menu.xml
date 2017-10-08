@@ -8,15 +8,15 @@
         <item
             android:id="@+id/navigation_item_video"
             android:icon="@drawable/iconfont_home"
-            android:title="视频" />
+            android:title="@string/video" />
         <item
             android:id="@+id/navigation_item_blog"
             android:icon="@drawable/iconfont_blog"
-            android:title="我的博客" />
+            android:title="@string/MyBlog" />
         <item
             android:id="@+id/navigation_item_about"
             android:icon="@drawable/iconfont_about"
-            android:title="关于SuperVideo" />
+            android:title="@string/supervideo" />
     </group>
 
 </menu>
