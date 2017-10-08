@@ -1,11 +1,14 @@
 package com.project.fanyuzeng.niubilityvideoplayer.model.sohu;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by fanyuzeng on 2017/9/30.
  * Function:
  */
 
-public class Video {
+public class Video implements Parcelable {
     /**
      * aid : 9395605
      * bgCover169 : http://photocdn.tv.sohu.com/img/20170910/vrs_1505041551813_92441766_L0mTW_pic23.jpg
@@ -544,4 +547,127 @@ public class Video {
                 ", video_sub_name='" + video_sub_name + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.aid);
+        dest.writeString(this.bgCover169);
+        dest.writeString(this.cate_code);
+        dest.writeInt(this.cid);
+        dest.writeLong(this.create_date);
+        dest.writeInt(this.crid);
+        dest.writeInt(this.data_type);
+        dest.writeString(this.download_url);
+        dest.writeInt(this.end_time);
+        dest.writeString(this.guest);
+        dest.writeInt(this.has_ep);
+        dest.writeString(this.hor_big_pic);
+        dest.writeString(this.hor_high_pic);
+        dest.writeInt(this.is_act);
+        dest.writeInt(this.isai);
+        dest.writeInt(this.origin_album_id);
+        dest.writeString(this.period);
+        dest.writeInt(this.play_count);
+        dest.writeString(this.publish_user_name);
+        dest.writeString(this.show_date);
+        dest.writeInt(this.site);
+        dest.writeInt(this.start_time);
+        dest.writeString(this.tip);
+        dest.writeInt(this.total_duration);
+        dest.writeInt(this.tvIsVr);
+        dest.writeInt(this.tvPlayType);
+        dest.writeInt(this.tvSType);
+        dest.writeInt(this.tv_id);
+        dest.writeString(this.url_56_html5);
+        dest.writeString(this.url_blue);
+        dest.writeString(this.url_high);
+        dest.writeString(this.url_high_265);
+        dest.writeString(this.url_html5);
+        dest.writeString(this.url_nor);
+        dest.writeString(this.url_nor_265);
+        dest.writeString(this.url_original);
+        dest.writeString(this.url_original_265);
+        dest.writeString(this.url_super);
+        dest.writeString(this.url_super_265);
+        dest.writeString(this.ver_big_pic);
+        dest.writeString(this.ver_high_pic);
+        dest.writeInt(this.vid);
+        dest.writeString(this.video_desc);
+        dest.writeString(this.video_first_name);
+        dest.writeInt(this.video_is_fee);
+        dest.writeString(this.video_name);
+        dest.writeInt(this.video_order);
+        dest.writeString(this.video_sub_name);
+    }
+
+    public Video() {
+    }
+
+    protected Video(Parcel in) {
+        this.aid = in.readInt();
+        this.bgCover169 = in.readString();
+        this.cate_code = in.readString();
+        this.cid = in.readInt();
+        this.create_date = in.readLong();
+        this.crid = in.readInt();
+        this.data_type = in.readInt();
+        this.download_url = in.readString();
+        this.end_time = in.readInt();
+        this.guest = in.readString();
+        this.has_ep = in.readInt();
+        this.hor_big_pic = in.readString();
+        this.hor_high_pic = in.readString();
+        this.is_act = in.readInt();
+        this.isai = in.readInt();
+        this.origin_album_id = in.readInt();
+        this.period = in.readString();
+        this.play_count = in.readInt();
+        this.publish_user_name = in.readString();
+        this.show_date = in.readString();
+        this.site = in.readInt();
+        this.start_time = in.readInt();
+        this.tip = in.readString();
+        this.total_duration = in.readInt();
+        this.tvIsVr = in.readInt();
+        this.tvPlayType = in.readInt();
+        this.tvSType = in.readInt();
+        this.tv_id = in.readInt();
+        this.url_56_html5 = in.readString();
+        this.url_blue = in.readString();
+        this.url_high = in.readString();
+        this.url_high_265 = in.readString();
+        this.url_html5 = in.readString();
+        this.url_nor = in.readString();
+        this.url_nor_265 = in.readString();
+        this.url_original = in.readString();
+        this.url_original_265 = in.readString();
+        this.url_super = in.readString();
+        this.url_super_265 = in.readString();
+        this.ver_big_pic = in.readString();
+        this.ver_high_pic = in.readString();
+        this.vid = in.readInt();
+        this.video_desc = in.readString();
+        this.video_first_name = in.readString();
+        this.video_is_fee = in.readInt();
+        this.video_name = in.readString();
+        this.video_order = in.readInt();
+        this.video_sub_name = in.readString();
+    }
+
+    public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
+        @Override
+        public Video createFromParcel(Parcel source) {
+            return new Video(source);
+        }
+
+        @Override
+        public Video[] newArray(int size) {
+            return new Video[size];
+        }
+    };
 }

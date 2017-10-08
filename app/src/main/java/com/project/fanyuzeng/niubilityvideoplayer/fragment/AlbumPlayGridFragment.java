@@ -3,6 +3,7 @@ package com.project.fanyuzeng.niubilityvideoplayer.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,17 @@ public class AlbumPlayGridFragment extends BaseFragment {
     private int mPageTotal;
     private TextView mEmpytText;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private boolean mIsfirstSecelted = true;
+    private int mCurrentPosition;
+    private onPlayVideoSelectedListener mVideoSelectedListener;
 
+    public void setVideoSelectedListener(onPlayVideoSelectedListener videoSelectedListener) {
+        mVideoSelectedListener = videoSelectedListener;
+    }
+
+    public interface onPlayVideoSelectedListener {
+        void onPlayVideoSelected(Video video, int position);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +60,7 @@ public class AlbumPlayGridFragment extends BaseFragment {
             mInitViewPositon = getArguments().getInt(ARGS_INIT_POSITION);
             mPagerNo = 0;
             mPagerSize = 50;
-
+            mCurrentPosition = mInitViewPositon;
             mPageTotal = (mAlbum.getVideoTotle() + mPagerSize - 1) / mPagerSize;
             loadData();
         }
@@ -68,7 +79,7 @@ public class AlbumPlayGridFragment extends BaseFragment {
 //                    }
 //                });
                 Log.d(TAG, "onGetAlbumVideoSuccess " + videoList.size());
-                if (mVideoItemAdapter!=null) {
+                if (mVideoItemAdapter != null) {
                     for (Video video : videoList) {
                         mVideoItemAdapter.addVideo(video);
                     }
@@ -79,6 +90,13 @@ public class AlbumPlayGridFragment extends BaseFragment {
                     public void run() {
                         mVideoItemAdapter.notifyDataSetChanged();
                         mEmpytText.setVisibility(View.GONE);
+                        if (mVideoItemAdapter.getCount() > mInitViewPositon && mIsfirstSecelted) {
+                            mCustomGridView.setSelection(mInitViewPositon);
+                            mCustomGridView.setItemChecked(mInitViewPositon, true);
+                            mIsfirstSecelted = false;
+                            SystemClock.sleep(100);
+                            mCustomGridView.smoothScrollToPosition(mInitViewPositon);
+                        }
                     }
                 });
             }
@@ -127,7 +145,7 @@ public class AlbumPlayGridFragment extends BaseFragment {
         });
     }
 
-    public static BaseFragment newInstance(Album album, boolean isShowDesc, int initVideoPosition) {
+    public static AlbumPlayGridFragment newInstance(Album album, boolean isShowDesc, int initVideoPosition) {
         AlbumPlayGridFragment fragment = new AlbumPlayGridFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_ALBUM, album);
@@ -138,9 +156,18 @@ public class AlbumPlayGridFragment extends BaseFragment {
     }
 
     private class VideoItemSelectedListener implements VideoItemAdapter.onVideoSelectedListener {
-        @Override
-        public void onVideoSelected() {
 
+        @Override
+        public void onVideoSelected(Video video, int position) {
+            if (mCustomGridView != null) {
+                mCustomGridView.setSelection(position);
+                mCustomGridView.setItemChecked(position, true);
+                mCurrentPosition = position;
+                if (mVideoSelectedListener != null) {
+                    mVideoSelectedListener.onPlayVideoSelected(video, position);
+                }
+
+            }
         }
     }
 }

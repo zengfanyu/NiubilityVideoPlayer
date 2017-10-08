@@ -4,6 +4,7 @@ import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.AlbumList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
 import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,6 +100,17 @@ public class LetvAPI extends BaseSiteAPI {
     @Override
     protected void parseAndMappingAlbumVideoDataFromResponse(Album album, Response response, onGetAlbumVideoListener listener) {
         // TODO: 2017/9/30
+    }
+
+    @Override
+    protected String getVideoPlayUrl(int siteId, Video video) {
+        // TODO: 2017/10/8
+        return null;
+    }
+
+    @Override
+    protected void parseAndMappingVideoPlayUrlDataFromResponse(Response response,Video video, onGetVideoPlayUrlListener listener) {
+        // TODO: 2017/10/8
     }
 
     /**

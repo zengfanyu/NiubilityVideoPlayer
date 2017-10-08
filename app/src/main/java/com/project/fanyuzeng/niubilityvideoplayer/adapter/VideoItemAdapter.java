@@ -33,7 +33,7 @@ public class VideoItemAdapter extends BaseAdapter {
     }
 
     public interface onVideoSelectedListener {
-        void onVideoSelected();
+        void onVideoSelected(Video video,int position);
 
     }
 
@@ -70,9 +70,9 @@ public class VideoItemAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Video video = getItem(position);
+        final Video video = getItem(position);
         Log.d(TAG, "getView ");
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.video_item_layout, parent,false);
@@ -93,6 +93,12 @@ public class VideoItemAdapter extends BaseAdapter {
             holder.videoTitle.setText(String.valueOf(position + 1));//position 从0开始， 剧集从1开始
         }
 
+        holder.videoTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onVideoSelected(video,position);
+            }
+        });
 
         return convertView;
     }

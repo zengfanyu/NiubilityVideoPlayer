@@ -1,5 +1,6 @@
 package com.project.fanyuzeng.niubilityvideoplayer.api;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.project.fanyuzeng.niubilityvideoplayer.AppManager;
@@ -15,7 +16,11 @@ import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoList;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.VideoResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.UUID;
 
 import okhttp3.Response;
 
@@ -110,6 +115,7 @@ public class SohuApi extends BaseSiteAPI {
                     v.setHor_high_pic(video.getHor_high_pic());
                     v.setVer_high_pic(video.getVer_high_pic());
                     v.setVid(video.getVid());
+                    v.setAid(video.getAid());
                     v.setVideo_name(video.getVideo_name());
                     videoList.add(v);
                 }
@@ -122,6 +128,55 @@ public class SohuApi extends BaseSiteAPI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected String getVideoPlayUrl(int siteId, Video video) {
+        return String.format(Constants.API_SOHU.API_VIDEO_PLAY_URL_FORMAT, video.getVid(), video.getAid());
+    }
+
+    @Override
+    protected void parseAndMappingVideoPlayUrlDataFromResponse(Response response, Video video, onGetVideoPlayUrlListener listener) {
+        try {
+            JSONObject result = new JSONObject(response.body().string());
+            JSONObject data = result.optJSONObject("data");
+
+            //拿标清url
+            String normalUrl = data.optString("url_nor");
+            if (!TextUtils.isEmpty(normalUrl)) {
+                normalUrl += "uid=" + getUUID() + "&pt=5&prod=app&pg=1";
+                video.setUrl_nor(normalUrl);
+                if (listener != null)
+                    listener.onGetNormalUrl(video, normalUrl);
+            }
+            //拿高清Url
+            String hightUrl = data.optString("url_high");
+            if (!TextUtils.isEmpty(hightUrl)) {
+                hightUrl += "uid=" + getUUID() + "&pt=5&prod=app&pg=1";
+                video.setUrl_high(hightUrl);
+                if (listener != null)
+                    listener.onGetHightUrl(video, hightUrl);
+            }
+            //拿超清Url
+            String superUrl = data.optString("url_super");
+            if (!TextUtils.isEmpty(superUrl)) {
+                superUrl += "uid=" + getUUID() + "&pt=5&prod=app&pg=1";
+                video.setUrl_super(superUrl);
+                if (listener != null)
+                    listener.onGetSuperUrl(video, superUrl);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String getUUID() {
+        UUID uuid = UUID.randomUUID();
+        //SOHU API的规则
+        return uuid.toString().replace("-", "");
     }
 
 

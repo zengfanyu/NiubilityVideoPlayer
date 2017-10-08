@@ -5,6 +5,7 @@ import android.content.Context;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
 import com.project.fanyuzeng.niubilityvideoplayer.model.SiteMode;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 
 /**
  * Created by fanyuzeng on 2017/9/25.
@@ -47,5 +48,17 @@ public class SiteApi {
                 new SohuApi().onGetAlbumVideo(album, pageNo, pageSize, listener);
                 break;
         }
+    }
+
+    public static void onGetVideoPlayUrl(int siteId, Video video, onGetVideoPlayUrlListener listener) {
+        switch (siteId) {
+            case SiteMode.LETV:
+                new LetvAPI().onGetVideoPlayUrl(siteId, video, listener);
+                break;
+            case SiteMode.SOHU:
+                new SohuApi().onGetVideoPlayUrl(siteId, video, listener);
+                break;
+        }
+
     }
 }

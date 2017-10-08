@@ -2,12 +2,15 @@ package com.project.fanyuzeng.niubilityvideoplayer.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,12 +22,15 @@ import com.project.fanyuzeng.niubilityvideoplayer.R2;
 import com.project.fanyuzeng.niubilityvideoplayer.api.ErrorInfo;
 import com.project.fanyuzeng.niubilityvideoplayer.api.SiteApi;
 import com.project.fanyuzeng.niubilityvideoplayer.api.onGetAlbumDetailListener;
+import com.project.fanyuzeng.niubilityvideoplayer.api.onGetVideoPlayUrlListener;
 import com.project.fanyuzeng.niubilityvideoplayer.fragment.AlbumPlayGridFragment;
-import com.project.fanyuzeng.niubilityvideoplayer.fragment.BaseFragment;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 import com.project.fanyuzeng.niubilityvideoplayer.utils.ImageUtils;
+import com.project.fanyuzeng.niubilityvideoplayer.utils.NetWorkUtils;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by fanyuzeng on 2017/9/30.
@@ -49,13 +55,21 @@ public class AlbumDetailActivity extends BaseActivity {
     FrameLayout mIdFragmentContainer;
     @BindView(R2.id.id_tv_album_tip)
     TextView mAlbumTip;
+    @BindView(R2.id.id_btn_normal)
+    Button mNormalStreamPlay;
+    @BindView(R2.id.id_btn_high)
+    Button mHightStreamPlay;
+    @BindView(R2.id.id_btn_super)
+    Button mSuperStreamPlay;
 
 
     private Album mAlbum;
     private int mVideoNo;
     private boolean mIsShowDesc;
     private boolean mIsFavor;
-    private BaseFragment mFragment;
+    private AlbumPlayGridFragment mFragment;
+    private int mCurrentVideoPosition;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void initViews() {
@@ -67,6 +81,50 @@ public class AlbumDetailActivity extends BaseActivity {
         setSupportActionBar(); //表示当前页面支持ActionBar
         setTitle(mAlbum.getTitle());
         setSupportArrowActionBar(true);
+
+    }
+
+    @OnClick({R2.id.id_btn_super, R2.id.id_btn_high, R2.id.id_btn_normal})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.id_btn_super:
+                Log.d(TAG, "onClick " + "super");
+                handleButtonClick(view);
+                break;
+            case R.id.id_btn_normal:
+                Log.d(TAG, "onClick " + "normal");
+                handleButtonClick(view);
+                break;
+            case R.id.id_btn_high:
+                Log.d(TAG, "onClick " + "high");
+                handleButtonClick(view);
+                break;
+            default:
+                break;
+        }
+    }
+
+    //三个Button有共同点，tag设置的id是一样的，value值不一样
+    private void handleButtonClick(View view) {
+        Button button = (Button) view;
+        String url = (String) button.getTag(R.id.key_video_url);
+        int streamType = (int) button.getTag(R.id.key_video_stream);
+        Video video = (Video) button.getTag(R.id.key_video);
+        int currentPosition = (int) button.getTag(R.id.key_video_current_number);
+
+        Log.d(TAG, "APNType " + NetWorkUtils.getAPNType() + "");
+        switch (NetWorkUtils.getAPNType()) {
+            case 0://没网络
+
+                break;
+            case 1://wifi
+                PlayActivity.lunchActivity(AlbumDetailActivity.this, url, video, streamType, currentPosition);
+                break;
+            case 2: //2G
+            case 3: //3G
+            case 4: //4G
+                break;
+        }
 
     }
 
@@ -83,6 +141,7 @@ public class AlbumDetailActivity extends BaseActivity {
                     public void run() {
                         // TODO: 2017/9/30 处理此处initVideoPosition
                         mFragment = AlbumPlayGridFragment.newInstance(album, mIsShowDesc, 0);
+                        mFragment.setVideoSelectedListener(mPlayVideoSelectedListener);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.id_fragment_container, mFragment);
                         transaction.commit();
@@ -211,5 +270,81 @@ public class AlbumDetailActivity extends BaseActivity {
         favItem.setVisible(mIsFavor);
         unfavItem.setVisible(!mIsFavor);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private AlbumPlayGridFragment.onPlayVideoSelectedListener mPlayVideoSelectedListener = new AlbumPlayGridFragment.onPlayVideoSelectedListener() {
+        @Override
+        public void onPlayVideoSelected(Video video, int position) {
+            mCurrentVideoPosition = position;
+            // TODO: 2017/10/8 修复此处siteId
+            SiteApi.onGetVideoPlayUrl(1, video, new onGetVideoPlayUrlListener() {
+                @Override
+                public void onGetSuperUrl(Video video, String url) {
+                    Log.d(TAG, "onGetSuperUrl " + url);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSuperStreamPlay.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+                    mSuperStreamPlay.setTag(R.id.key_video_url, url);//视频url
+                    mSuperStreamPlay.setTag(R.id.key_video, video);//视频info
+                    mSuperStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
+                    mSuperStreamPlay.setTag(R.id.key_video_stream, StreamType.SUPER);
+                }
+
+                @Override
+                public void onGetNormalUrl(Video video, String url) {
+                    Log.d(TAG, "onGetNormalUrl " + url);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNormalStreamPlay.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+                    mNormalStreamPlay.setTag(R.id.key_video_url, url);//视频url
+                    mNormalStreamPlay.setTag(R.id.key_video, video);//视频info
+                    mNormalStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
+                    mNormalStreamPlay.setTag(R.id.key_video_stream, StreamType.NORMAL);
+                }
+
+                @Override
+                public void onGetHightUrl(Video video, String url) {
+                    Log.d(TAG, "onGetHightUrl " + url);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHightStreamPlay.setVisibility(View.VISIBLE);
+
+                        }
+                    });
+                    mHightStreamPlay.setTag(R.id.key_video_url, url);//视频url
+                    mHightStreamPlay.setTag(R.id.key_video, video);//视频info
+                    mHightStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
+                    mHightStreamPlay.setTag(R.id.key_video_stream, StreamType.HIGHT);
+                }
+
+                @Override
+                public void onGetFailed(ErrorInfo info) {
+                    Log.d(TAG, "onGetFailed " + info.toString());
+                    hideAllButton();
+                }
+            });
+
+        }
+    };
+
+    private void hideAllButton() {
+        mSuperStreamPlay.setVisibility(View.GONE);
+        mNormalStreamPlay.setVisibility(View.GONE);
+        mHightStreamPlay.setVisibility(View.GONE);
+    }
+
+    static class StreamType {
+        public static final int SUPER = 1;
+        public static final int NORMAL = 2;
+        public static final int HIGHT = 3;
     }
 }

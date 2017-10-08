@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.ChannelMode;
+import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 import com.project.fanyuzeng.niubilityvideoplayer.utils.okHttpUtils;
 
 import java.io.IOException;
@@ -153,6 +154,52 @@ public abstract class BaseSiteAPI {
         });
     }
 
+    /**
+     * 请求不同播放码率的视频的url
+     *
+     * @param siteId
+     * @param video
+     * @param listener
+     */
+    protected void onGetVideoPlayUrl(int siteId, Video video, onGetVideoPlayUrlListener listener) {
+        String url = getVideoPlayUrl(siteId, video);
+        if (!TextUtils.isEmpty(url)) {
+            doGetVideoPlayURLByUrl(url, video,listener);
+        }
+    }
+
+    private void doGetVideoPlayURLByUrl(final String url, final Video video, final onGetVideoPlayUrlListener listener) {
+        okHttpUtils.execute(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (listener != null) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("doGetVideoPlayURLByUrl")
+                            .setExceptionString(e.toString())
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetFailed(errorInfo);
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    ErrorInfo errorInfo = new ErrorInfo.Builder()
+                            .setUrl(url)
+                            .setFunctionName("onResponse")
+                            .setType(ErrorInfo.ERROR_TYPE_URL)
+                            .build();
+                    listener.onGetFailed(errorInfo);
+                    return;
+                }
+                parseAndMappingVideoPlayUrlDataFromResponse(response,video, listener);
+
+            }
+        });
+    }
+
 
     /**
      * 拼接Album视频 url
@@ -181,6 +228,15 @@ public abstract class BaseSiteAPI {
     protected abstract String getAlbumUrl(ChannelMode channelMode, int pageNo, int pageSize);
 
     /**
+     * 拼接Video不同码率的播放地址url
+     *
+     * @param siteId
+     * @param video
+     * @return
+     */
+    protected abstract String getVideoPlayUrl(int siteId, Video video);
+
+    /**
      * 使用okHttp访问url地址，解析Album详细数据，并且映射到实体类
      *
      * @param album
@@ -205,5 +261,14 @@ public abstract class BaseSiteAPI {
      * @param listener
      */
     protected abstract void parseAndMappingAlbumVideoDataFromResponse(Album album, Response response, onGetAlbumVideoListener listener);
+
+    /**
+     * 使用okhttp访问url地址，解析Video不同码率下的播放地址url，并且映射到实体类中
+     *
+     * @param response
+     * @param listener
+     */
+    protected abstract void parseAndMappingVideoPlayUrlDataFromResponse(Response response, Video video,onGetVideoPlayUrlListener listener);
+
 
 }

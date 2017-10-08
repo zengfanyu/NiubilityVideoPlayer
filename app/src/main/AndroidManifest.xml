@@ -31,6 +31,9 @@
         <activity android:name=".activity.AlbumDetailActivity">
 
         </activity>
+        <activity android:name=".activity.PlayActivity">
+
+        </activity>
     </application>
 
 </manifest>
