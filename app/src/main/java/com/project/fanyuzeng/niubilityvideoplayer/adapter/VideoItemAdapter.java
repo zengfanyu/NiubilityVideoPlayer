@@ -33,13 +33,15 @@ public class VideoItemAdapter extends BaseAdapter {
     }
 
     public interface onVideoSelectedListener {
-        void onVideoSelected(Video video,int position);
+        void onVideoSelected(Video video, int position);
 
     }
 
+    public void setOnVideoSelectedListener(onVideoSelectedListener listener) {
+        this.mListener = listener;
+    }
 
-    public VideoItemAdapter(Context context, int totalCount, onVideoSelectedListener listener) {
-        mListener = listener;
+    public VideoItemAdapter(Context context, int totalCount) {
         mContext = context;
         mTotalCount = totalCount;
         Log.d(TAG, "VideoItemAdapter ");
@@ -75,7 +77,7 @@ public class VideoItemAdapter extends BaseAdapter {
         final Video video = getItem(position);
         Log.d(TAG, "getView ");
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.video_item_layout, parent,false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.video_item_layout, parent, false);
             holder = new ViewHolder();
             holder.videoContainer = (LinearLayout) convertView.findViewById(R.id.id_video_container);
             holder.videoTitle = (Button) convertView.findViewById(R.id.id_btn_video_item);
@@ -96,7 +98,7 @@ public class VideoItemAdapter extends BaseAdapter {
         holder.videoTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onVideoSelected(video,position);
+                mListener.onVideoSelected(video, position);
             }
         });
 

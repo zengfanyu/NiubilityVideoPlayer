@@ -281,49 +281,19 @@ public class AlbumDetailActivity extends BaseActivity {
                 @Override
                 public void onGetSuperUrl(Video video, String url) {
                     Log.d(TAG, "onGetSuperUrl " + url);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSuperStreamPlay.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-                    mSuperStreamPlay.setTag(R.id.key_video_url, url);//视频url
-                    mSuperStreamPlay.setTag(R.id.key_video, video);//视频info
-                    mSuperStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
-                    mSuperStreamPlay.setTag(R.id.key_video_stream, StreamType.SUPER);
+                    bindDatatoButton(mSuperStreamPlay, StreamType.SUPER, url, video);
                 }
 
                 @Override
                 public void onGetNormalUrl(Video video, String url) {
                     Log.d(TAG, "onGetNormalUrl " + url);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mNormalStreamPlay.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-                    mNormalStreamPlay.setTag(R.id.key_video_url, url);//视频url
-                    mNormalStreamPlay.setTag(R.id.key_video, video);//视频info
-                    mNormalStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
-                    mNormalStreamPlay.setTag(R.id.key_video_stream, StreamType.NORMAL);
+                    bindDatatoButton(mNormalStreamPlay, StreamType.NORMAL, url, video);
                 }
 
                 @Override
                 public void onGetHightUrl(Video video, String url) {
                     Log.d(TAG, "onGetHightUrl " + url);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mHightStreamPlay.setVisibility(View.VISIBLE);
-
-                        }
-                    });
-                    mHightStreamPlay.setTag(R.id.key_video_url, url);//视频url
-                    mHightStreamPlay.setTag(R.id.key_video, video);//视频info
-                    mHightStreamPlay.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
-                    mHightStreamPlay.setTag(R.id.key_video_stream, StreamType.HIGHT);
+                    bindDatatoButton(mHightStreamPlay, StreamType.HIGHT, url, video);
                 }
 
                 @Override
@@ -336,15 +306,30 @@ public class AlbumDetailActivity extends BaseActivity {
         }
     };
 
+    private void bindDatatoButton(final Button whatStreamButton, int streamType, String url, Video video) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                whatStreamButton.setVisibility(View.VISIBLE);
+
+            }
+        });
+        whatStreamButton.setTag(R.id.key_video_url, url);//视频url
+        whatStreamButton.setTag(R.id.key_video, video);//视频info
+        whatStreamButton.setTag(R.id.key_video_current_number, mCurrentVideoPosition);//当前位置
+        whatStreamButton.setTag(R.id.key_video_stream, streamType);
+
+    }
+
     private void hideAllButton() {
         mSuperStreamPlay.setVisibility(View.GONE);
         mNormalStreamPlay.setVisibility(View.GONE);
         mHightStreamPlay.setVisibility(View.GONE);
     }
 
-    static class StreamType {
-        public static final int SUPER = 1;
-        public static final int NORMAL = 2;
-        public static final int HIGHT = 3;
+    private static class StreamType {
+        static final int SUPER = 1;
+        static final int NORMAL = 2;
+        static final int HIGHT = 3;
     }
 }

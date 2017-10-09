@@ -128,7 +128,8 @@ public class AlbumPlayGridFragment extends BaseFragment {
         mCustomGridView = bindViewId(R.id.id_gv_video_layout);
         //同样是剧集，综艺节目第xx期，电视剧集是数字，1表示综艺或者纪录片，6表示动漫、电视剧
         mCustomGridView.setNumColumns(mIsShowDesc ? 1 : 6);
-        mVideoItemAdapter = new VideoItemAdapter(getContext(), mAlbum.getVideoTotle(), new VideoItemSelectedListener());
+        mVideoItemAdapter = new VideoItemAdapter(getContext(), mAlbum.getVideoTotle());
+        mVideoItemAdapter.setOnVideoSelectedListener(new VideoItemSelectedListener());
         mVideoItemAdapter.setIsShowTitleContent(mIsShowDesc);
         mCustomGridView.setAdapter(mVideoItemAdapter);
         mVideoItemAdapter.notifyDataSetChanged();
