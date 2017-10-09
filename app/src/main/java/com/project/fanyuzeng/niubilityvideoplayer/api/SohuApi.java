@@ -41,28 +41,6 @@ public class SohuApi extends BaseSiteAPI {
 
     private static final String TAG = "SohuApi";
 
-    @Override
-    protected String getAlbumDetailUrl(Album album) {
-        return Constants.API_SOHU.API_ALBUM_INFO + album.getAlbumId() + ".json?" + Constants.API_SOHU.API_KEY;
-    }
-
-    @Override
-    protected void parseAndMappingAlbumDetailDataFromResponse(Album album, Response response, onGetAlbumDetailListener listener) {
-        try {
-            DetailResult result = AppManager.getGson().fromJson(response.body().string(), DetailResult.class);
-            if (result.getResultAlbum() != null) {
-                if (result.getResultAlbum().getLastVideoCount() > 0) {
-                    album.setVideoTotle(result.getResultAlbum().getLastVideoCount());
-                } else {
-                    album.setVideoTotle(result.getResultAlbum().getTotalVideoCount());
-                }
-            }
-            if (listener != null)
-                listener.onGetAlbumDetailsSuccess(album);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected String getAlbumUrl(ChannelMode channelMode, int pageNo, int pageSize) {
@@ -98,6 +76,29 @@ public class SohuApi extends BaseSiteAPI {
     }
 
     @Override
+    protected String getAlbumDetailUrl(Album album) {
+        return Constants.API_SOHU.API_ALBUM_INFO + album.getAlbumId() + ".json?" + Constants.API_SOHU.API_KEY;
+    }
+
+    @Override
+    protected void parseAndMappingAlbumDetailDataFromResponse(Album album, Response response, onGetAlbumDetailListener listener) {
+        try {
+            DetailResult result = AppManager.getGson().fromJson(response.body().string(), DetailResult.class);
+            if (result.getResultAlbum() != null) {
+                if (result.getResultAlbum().getLastVideoCount() > 0) {
+                    album.setVideoTotle(result.getResultAlbum().getLastVideoCount());
+                } else {
+                    album.setVideoTotle(result.getResultAlbum().getTotalVideoCount());
+                }
+            }
+            if (listener != null)
+                listener.onGetAlbumDetailsSuccess(album);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected String getAlbumVideoUrl(Album album, int pageNo, int pageSize) {
 
         return String.format(Constants.API_SOHU.API_ALBUM_VIDOES_FORMAT, album.getAlbumId(), pageNo, pageSize);
@@ -114,6 +115,7 @@ public class SohuApi extends BaseSiteAPI {
                     Video v = new Video();
                     v.setHor_high_pic(video.getHor_high_pic());
                     v.setVer_high_pic(video.getVer_high_pic());
+                    v.setSite(album.getSite().getSiteId());
                     v.setVid(video.getVid());
                     v.setAid(video.getAid());
                     v.setVideo_name(video.getVideo_name());
@@ -165,6 +167,7 @@ public class SohuApi extends BaseSiteAPI {
                 if (listener != null)
                     listener.onGetSuperUrl(video, superUrl);
             }
+            Log.d(TAG,"parseAndMappingVideoPlayUrlDataFromResponse " + "normalUrl"+normalUrl+",hightUrl:"+hightUrl+",superUrl:"+superUrl);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -68,8 +68,7 @@ public class AlbumPlayGridFragment extends BaseFragment {
 
     private void loadData() {
         mPagerNo++;
-        // TODO: 2017/9/30 完善此处siteId
-        SiteApi.onGetAlbumVideo(1, mPagerNo, mPagerSize, mAlbum, new onGetAlbumVideoListener() {
+        SiteApi.onGetAlbumVideo(mPagerNo, mPagerSize, mAlbum, new onGetAlbumVideoListener() {
             @Override
             public void onGetAlbumVideoSuccess(VideoList videoList) {
 //                mHandler.post(new Runnable() {

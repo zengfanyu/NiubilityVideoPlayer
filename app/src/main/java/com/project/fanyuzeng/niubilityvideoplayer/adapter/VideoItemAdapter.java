@@ -26,6 +26,7 @@ public class VideoItemAdapter extends BaseAdapter {
     private int mTotalCount;
     private VideoList mVideos = new VideoList();
     private boolean mIsShowTitleContent;
+    private boolean isFirstEnter=true;
 
     public void addVideo(Video videos) {
         Log.d(TAG, "addVideo ");
@@ -94,7 +95,10 @@ public class VideoItemAdapter extends BaseAdapter {
         } else {
             holder.videoTitle.setText(String.valueOf(position + 1));//position 从0开始， 剧集从1开始
         }
-
+        if (position==0&&isFirstEnter){ //首次进入详情页不显示button问题
+            mListener.onVideoSelected(video,position);
+            isFirstEnter=false;
+        }
         holder.videoTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

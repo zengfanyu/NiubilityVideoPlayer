@@ -130,16 +130,16 @@ public class AlbumDetailActivity extends BaseActivity {
 
     @Override
     protected void initDatas() {
-        refreshInfoViews();
-        // TODO: 2017/9/30 处理此处siteId
-        SiteApi.onGetAlbumDetail(this, mAlbum, 1, new onGetAlbumDetailListener() {
+        SiteApi.onGetAlbumDetail(mAlbum, new onGetAlbumDetailListener() {
             @Override
             public void onGetAlbumDetailsSuccess(final Album album) {
-                Log.i(TAG, "onGetAlbumDetailsSuccess " + album.getVideoTotle());
+                mAlbum = album; //refresh value
+                Log.i(TAG, "onGetAlbumDetailsSuccess " + album.toString());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // TODO: 2017/9/30 处理此处initVideoPosition
+                        refreshInfoViews();
                         mFragment = AlbumPlayGridFragment.newInstance(album, mIsShowDesc, 0);
                         mFragment.setVideoSelectedListener(mPlayVideoSelectedListener);
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -276,8 +276,7 @@ public class AlbumDetailActivity extends BaseActivity {
         @Override
         public void onPlayVideoSelected(Video video, int position) {
             mCurrentVideoPosition = position;
-            // TODO: 2017/10/8 修复此处siteId
-            SiteApi.onGetVideoPlayUrl(1, video, new onGetVideoPlayUrlListener() {
+            SiteApi.onGetVideoPlayUrl(video, new onGetVideoPlayUrlListener() {
                 @Override
                 public void onGetSuperUrl(Video video, String url) {
                     Log.d(TAG, "onGetSuperUrl " + url);

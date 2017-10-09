@@ -31,7 +31,7 @@ public class Constants {
         //http://static.meizi.app.m.letv.com/android/mod/mob/ctl/album/act/detail/id/10026309/pcode/010410000/version/2.1.mindex.html
         public final static String ALBUM_DESC_URL_FORMAT = "http://static.meizi.app.m.letv.com/" +
                 "android/mod/mob/ctl/album/act/detail/id/%s/pcode/010410000/version/2.1.mindex.html";
-        //key : bh65OzqYYYmHRQ
+        //key : bh65OzqYYYmHRQ     server time
         public final static String SEVER_TIME_URL = "http://dynamic.meizi.app.m.letv.com/android/dynamic.php?mod=mob&ctl=timestamp&act=timestamp&pcode=010410000&version=5.4";
 
         //http://static.app.m.letv.com/android/mod/mob/ctl/videolist/act/detail/id/10026309/vid/0/b/1/s/30/o/-1/m/1/pcode/010410000/version/2.1.mindex.html

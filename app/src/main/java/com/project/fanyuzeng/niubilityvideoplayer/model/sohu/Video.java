@@ -108,7 +108,17 @@ public class Video implements Parcelable {
     private String video_name;
     private int video_order;
     private String video_sub_name;
+    //LETV special
+    private int mid;
 
+
+    public int getMid() {
+        return mid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
+    }
 
     public int getAid() {
         return aid;
@@ -545,6 +555,7 @@ public class Video implements Parcelable {
                 ", video_name='" + video_name + '\'' +
                 ", video_order=" + video_order +
                 ", video_sub_name='" + video_sub_name + '\'' +
+                ", mid='" + mid + '\'' +
                 '}';
     }
 
@@ -603,6 +614,7 @@ public class Video implements Parcelable {
         dest.writeString(this.video_name);
         dest.writeInt(this.video_order);
         dest.writeString(this.video_sub_name);
+        dest.writeInt(this.mid);
     }
 
     public Video() {
@@ -657,6 +669,7 @@ public class Video implements Parcelable {
         this.video_name = in.readString();
         this.video_order = in.readInt();
         this.video_sub_name = in.readString();
+        this.mid=in.readInt();
     }
 
     public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
