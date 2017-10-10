@@ -18,6 +18,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        all32 { minSdkVersion 17 }
+        all64 { minSdkVersion 21 }
+    }
+
+    sourceSets.main {
+        res.srcDirs = ['src/main/res']
+        jniLibs.srcDirs = ['src/main/jniLibs']
+    }
 }
 
 dependencies {
@@ -39,4 +48,5 @@ dependencies {
     compile 'com.github.hackware1993:MagicIndicator:1.5.0'
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile project(':ijkplayer-java')
 }
