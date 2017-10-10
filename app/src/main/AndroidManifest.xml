@@ -33,7 +33,8 @@
         <activity android:name=".activity.AlbumDetailActivity">
 
         </activity>
-        <activity android:name=".activity.PlayActivity">
+        <activity android:name=".activity.PlayActivity"
+            android:screenOrientation="landscape">
 
         </activity>
     </application>
