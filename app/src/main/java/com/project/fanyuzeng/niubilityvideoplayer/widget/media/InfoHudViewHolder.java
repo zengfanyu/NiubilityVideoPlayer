@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.TableLayout;
 
-import com.hejunlin.imooc_supervideo.R;
+import com.project.fanyuzeng.niubilityvideoplayer.R;
 
 import java.util.Locale;
 

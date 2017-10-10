@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
+import com.project.fanyuzeng.niubilityvideoplayer.widget.media.IjkVideoView;
+
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by fanyuzeng on 2017/10/8.
@@ -30,6 +33,9 @@ public class PlayActivity extends BaseActivity {
             Video video = intent.getParcelableExtra("video");
             Log.d(TAG, "initViews " + "videoUrl:" + videoUrl + "   ,streamType:" + streamType + ",currentPosition:" + currentPosition + ",video:" + video);
         }
+        IjkVideoView videoView=bindViewId(R.id.id_video_view);
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
     }
 

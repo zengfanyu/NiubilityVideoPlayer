@@ -20,8 +20,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.project.fanyuzeng.niubilityvideoplayer.R;
+
 import java.lang.ref.WeakReference;
-import com.hejunlin.imooc_supervideo.R;
 
 public final class MeasureHelper {
     private WeakReference<View> mWeakView;
