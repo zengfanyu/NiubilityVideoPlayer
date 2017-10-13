@@ -5,11 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,12 +26,15 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.project.fanyuzeng.niubilityvideoplayer.GestureDetectorController;
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.R2;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
 import com.project.fanyuzeng.niubilityvideoplayer.utils.DateUtils;
+import com.project.fanyuzeng.niubilityvideoplayer.utils.SystemUtils;
 import com.project.fanyuzeng.niubilityvideoplayer.widget.media.IjkVideoView;
 
+import java.text.NumberFormat;
 import java.util.Formatter;
 import java.util.Locale;
 
@@ -106,6 +113,15 @@ public class PlayActivity extends BaseActivity {
 
     private Formatter mFormatter;
     private StringBuilder mFortterBuilder;
+    private GestureDetectorController mGestureController;
+    private long mScrollProgress;
+    private boolean mIsHorizontalScroll;
+    private boolean mIsVerticalScroll;
+    private int mCurrentLight;
+    private int mMaxLight = 255;
+    private int mMaxVolume = 10;
+    private int mCurrentVolum;
+    private AudioManager mAudioManager;
 
 
     private class EventHandler extends Handler {
@@ -145,14 +161,139 @@ public class PlayActivity extends BaseActivity {
 
         getExtraData();
 
+        initSystemLightAndVolume();
+
+        initGestureController();
+
         initSeekBar();
 
         initVideoView();
 
-
         registerReceiver(mBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         toggleTopAndBottomLayout();
+    }
+
+    private void initSystemLightAndVolume() {
+        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        mAudioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 10;//系统声音0~10 *10是为了适配百分比
+        mCurrentVolum = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 10;
+
+        mCurrentLight = SystemUtils.getDefaultBrightness(this);
+        if (mCurrentLight == -1) {
+            mCurrentLight = SystemUtils.getBrightness(this);
+        }
+
+
+    }
+
+    private void initGestureController() {
+
+        mGestureController = new GestureDetectorController(this, new GestureDetectorController.IGestureListener() {
+
+            @Override
+            public void onScrollStart(int scrollType) {
+                mIsMove = true;
+                switch (scrollType) {
+                    case GestureDetectorController.SCROLL_HORIZONTAL:
+                        mTvHoriontalGesture.setVisibility(View.VISIBLE);
+                        mScrollProgress = -1;
+                        mIsHorizontalScroll = true;
+                        break;
+                    case GestureDetectorController.SCROLL_VERTICAL_LEFT:
+                        setComposeDrawableAndText(PlayActivity.this, mTvVerticalGesture, R.drawable.ic_light);
+                        mTvVerticalGesture.setVisibility(View.VISIBLE);
+                        updateVerticalText(mCurrentLight, mMaxLight);
+                        mIsVerticalScroll = true;
+                        break;
+                    case GestureDetectorController.SCROLL_VERTICAL_RIGHT:
+                        if (mCurrentVolum > 0) {
+                            setComposeDrawableAndText(PlayActivity.this, mTvVerticalGesture, R.drawable.volume_normal);
+                        } else {
+                            setComposeDrawableAndText(PlayActivity.this, mTvVerticalGesture, R.drawable.volume_no);
+                        }
+
+                        mTvVerticalGesture.setVisibility(View.VISIBLE);
+                        updateVerticalText(mCurrentVolum, mMaxVolume);
+                        mIsVerticalScroll = true;
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onScrollHorizontal(float x1, float x2) {
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int MAX_SEEK_STEP = 300 * 1000;
+                int offset = (int) ((x2 / width * MAX_SEEK_STEP) + mVideoView.getCurrentPosition());
+
+                mScrollProgress = (long) Math.max(0, Math.min(mVideoView.getDuration(), offset));
+
+                updateHorizontalText(mScrollProgress);
+
+                Log.d(TAG,">> onScrollHorizontal >> " + "mScrollProgress:"+mScrollProgress+",seekBar progress:"+mPlayerSeekbar.getProgress());
+
+                if (mPlayerBottomLayout.getVisibility()==View.VISIBLE){
+                    updateProgress();
+                }
+            }
+
+            @Override
+            public void onScrollVerticalLeft(float y1, float y2) {
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int offset = (int) ((mMaxLight * y1) / height);
+                if (Math.abs(offset) > 0) {
+                    mCurrentLight += offset;
+                    mCurrentVolum = Math.max(0, Math.min(mMaxLight, mCurrentLight));
+                    // 更新系统亮度
+                    SystemUtils.setBrightness(PlayActivity.this, mCurrentLight);
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(PlayActivity.this).edit();
+                    editor.putInt("shared_preferences_light", mCurrentLight);
+                    editor.apply();
+
+                    updateVerticalText(mCurrentLight, mMaxLight);
+                }
+            }
+
+            @Override
+            public void onScrollVerticalRight(float y1, float y2) {
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int offset = (int) ((mMaxVolume * y1) / height);
+                if (Math.abs(offset) > 0) {
+                    mCurrentVolum += offset;
+                    mCurrentVolum = Math.max(0, Math.min(mCurrentVolum, mMaxVolume));
+                    //  更新系统的声音
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mCurrentVolum / 10, 0);
+
+                    updateVerticalText(mCurrentVolum, mMaxVolume);
+
+                }
+            }
+        });
+    }
+
+    private void updateHorizontalText(long duration) {
+        String text = DateUtils.stringForTime((int) duration, mFormatter, mFortterBuilder) +
+                "/" + DateUtils.stringForTime(mVideoView.getDuration(), mFormatter, mFortterBuilder);
+        mTvHoriontalGesture.setText(text);
+
+    }
+
+    private void updateVerticalText(int current, int total) {
+        NumberFormat format = NumberFormat.getPercentInstance();
+        format.setMaximumFractionDigits(0);//设置整数部分允许最大小数位 66.5% -> 66%
+        String percent = format.format((double) (current) / (double) total);
+        mTvVerticalGesture.setText(percent);
+
+    }
+
+    private void setComposeDrawableAndText(Context context, TextView textView, int drawableId) {
+        Drawable drawable = context.getResources().getDrawable(drawableId);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(null, drawable, null, null);
+
     }
 
     private void initSeekBar() {
@@ -244,7 +385,7 @@ public class PlayActivity extends BaseActivity {
                         mProgressBar.setVisibility(View.GONE);
                         mLoadingInfo.setVisibility(View.GONE);
                         mTvTotalVideoTime.setText(DateUtils.stringForTime(mVideoView.getDuration(), mFormatter, mFortterBuilder));
-                        Log.d(TAG,"onInfo " +"duration:"+mVideoView.getDuration()+",totalTime:"+DateUtils.stringForTime(mVideoView.getDuration(), mFormatter, mFortterBuilder) );
+                        Log.d(TAG, "onInfo " + "duration:" + mVideoView.getDuration() + ",totalTime:" + DateUtils.stringForTime(mVideoView.getDuration(), mFormatter, mFortterBuilder));
                 }
                 return false;
             }
@@ -314,19 +455,31 @@ public class PlayActivity extends BaseActivity {
         mIvPlayerCenterPause.setVisibility(isPlaying ? View.GONE : View.VISIBLE);
         mCbPlayPause.setChecked(isPlaying);
         mCbPlayPause.refreshDrawableState();
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-
             if (!mIsMove) {
                 toggleTopAndBottomLayout();
+            } else {
+                mIsMove = false;
+            }
+
+            if (mIsHorizontalScroll) {
+                mIsHorizontalScroll=false;
+                mVideoView.seekTo((int) mScrollProgress);
+                mTvHoriontalGesture.setVisibility(View.GONE);
+            }
+
+            if (mIsVerticalScroll){
+                mIsVerticalScroll=false;
+                mTvVerticalGesture.setVisibility(View.GONE);
             }
         }
-        return super.onTouchEvent(event);
+        return mGestureController.onTouchEvent(event);
     }
+
     //上下面板的开关
     private void toggleTopAndBottomLayout() {
 
@@ -352,6 +505,7 @@ public class PlayActivity extends BaseActivity {
             }
         }, AUTO_HIDE_TIME);
     }
+
     //隐藏上下面板
     private void hideTopAndBottomLayout() {
         if (mIsDragger)
@@ -360,6 +514,7 @@ public class PlayActivity extends BaseActivity {
         mPlayerTopContainer.setVisibility(View.GONE);
         mPlayerBottomLayout.setVisibility(View.GONE);
     }
+
     //显示上下面板
     private void showTopAndBottomLayout() {
         mIsPanelShowing = true;
@@ -437,6 +592,8 @@ public class PlayActivity extends BaseActivity {
         }
         if (mVideoView != null)
             mVideoView.stopPlayback();
+
+        mAudioManager.abandonAudioFocus(null);
     }
 
     @Override
