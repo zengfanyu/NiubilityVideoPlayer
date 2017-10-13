@@ -10,13 +10,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 
@@ -26,6 +27,7 @@ import com.project.fanyuzeng.niubilityvideoplayer.R;
  */
 
 public class PullLoadRecyclerView extends LinearLayout {
+    private static final String TAG = "PullLoadRecyclerView";
     private Context mContext;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean mIsRefresh = false; //是否是刷新
@@ -64,19 +66,18 @@ public class PullLoadRecyclerView extends LinearLayout {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//使用默认动画
         mRecyclerView.setOnTouchListener(new OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {  //当正在刷新或者是正在加载跟过的时候，让RV消耗触摸事件
                 return mIsRefresh || mIsLoadMore;
             }
         });
 
         mRecyclerView.setVerticalScrollBarEnabled(false);//隐藏滚动条
-        mRecyclerView.addOnScrollListener(new RecyclerViewOnScroll());
+        mRecyclerView.addOnScrollListener(new RecyclerViewOnScroll());//监听RV的滑动状态
         mFootView = view.findViewById(R.id.id_footer_view);
         ImageView imageView = (ImageView) mFootView.findViewById(R.id.id_iv_load);
         imageView.setBackgroundResource(R.drawable.imooc_loading);
         mAnimationDrawable = (AnimationDrawable) imageView.getBackground();
-
-        TextView textView = (TextView) mFootView.findViewById(R.id.id_tv_load);
+        //先隐藏footerView
         mFootView.setVisibility(View.GONE);
         //view 包含swipeRefreshLayout, RecyclerView, FootView
         this.addView(view);//
@@ -95,7 +96,7 @@ public class PullLoadRecyclerView extends LinearLayout {
         }
     }
 
-    private class SwipeRefreshLayoutOnRefresh implements SwipeRefreshLayout.OnRefreshListener{
+    private class SwipeRefreshLayoutOnRefresh implements SwipeRefreshLayout.OnRefreshListener {
 
         @Override
         public void onRefresh() {
@@ -113,7 +114,11 @@ public class PullLoadRecyclerView extends LinearLayout {
             int firstItem = 0;
             int lastItem = 0;
             RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-            int totalCount = manager.getItemCount();
+            //Returns the number of items in the adapter bound to the parent RecyclerView.
+            int totalItemCount = manager.getItemCount();
+            //Return the current number of child views attached to the parent RecyclerView.
+            // This does not include child views that were temporarily detached and/or scrapped.
+            int totalChildCount = manager.getChildCount();
             if (manager instanceof GridLayoutManager) {
                 GridLayoutManager gridlayoutManager = (GridLayoutManager) manager;
                 //第一个完全可见的item
@@ -124,14 +129,16 @@ public class PullLoadRecyclerView extends LinearLayout {
                     lastItem = gridlayoutManager.findLastVisibleItemPosition();
                 }
             }
+
+            Log.d(TAG, "onScrolled " + "firstItem:" + firstItem + ",lastItem:" + lastItem + ",totalItemCount:" + totalItemCount + ",totalChildCount:" + totalChildCount);
             //什么时候触发上拉加载更多?
             // 1.加载更多是false
-            // 2.totalCount - 1 === lastItem
+            // 2.totalItemCount - 1 === lastItem
             // 3.mSwipeRefreshLayout可以用
             // 4. 不是处于下拉刷新状态
             // 5. 偏移量dx > 0 或dy > 0
             if (!mIsLoadMore
-                    && totalCount - 1 == lastItem
+                    && totalItemCount - 1 == lastItem
                     && mSwipeRefreshLayout.isEnabled()
                     && !mIsRefresh
                     && (dx > 0 || dy > 0)) {
@@ -153,12 +160,15 @@ public class PullLoadRecyclerView extends LinearLayout {
 
     private void loadMoreData() {
         if (mOnPullLoadMoreListener != null) {
-            mFootView.animate().translationY(0).setInterpolator(new AccelerateDecelerateInterpolator())
+            //translationY则是View当前位置相对于初始化位置的偏移量
+            mFootView.animate().translationY(0).setInterpolator(new BounceInterpolator())
                     .setDuration(300).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
+                    //加载更多的时候，将footerView显示出来
                     mFootView.setVisibility(View.VISIBLE);
+                    //开始动画 不可以在onCreate方法中调用，因为在onCreate方法中View还没有初始化完成
                     mAnimationDrawable.start();
                 }
             }).start();
@@ -187,12 +197,20 @@ public class PullLoadRecyclerView extends LinearLayout {
         mIsLoadMore = false;
         mIsRefresh = false;
         setRefreshing(false);
-        mFootView.animate().translationY(mFootView.getHeight()).setInterpolator(new AccelerateDecelerateInterpolator())
-                .setDuration(300).start();
+        //加载结束后
+        mFootView.animate().translationY(mFootView.getHeight()).setInterpolator(new BounceInterpolator())
+                .setDuration(300).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                Toast.makeText(mContext, "已加载到更多", Toast.LENGTH_SHORT).show();
+            }
+        }).start();
     }
 
-  public   interface OnPullLoadMoreListener {
+    public interface OnPullLoadMoreListener {
         void onRefresh();
+
         void onLoadMore();
     }
 

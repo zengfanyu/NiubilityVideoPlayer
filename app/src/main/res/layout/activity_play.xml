@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/activity_play"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/activity_play"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black"
@@ -31,8 +31,9 @@
                 android:layout_below="@+id/id_pb_loading"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="@dimen/dimen_12dp"
-                android:textSize="@dimen/dimen_32sp"
-                android:textColor="@color/white"/>
+                android:text="@string/loading"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_32sp"/>
 
             <!--android:indeterminate 表示不确定的进度-->
             <ProgressBar
@@ -40,10 +41,10 @@
                 android:layout_width="@dimen/dimen_120dp"
                 android:layout_height="@dimen/dimen_120dp"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/dimen_120dp"
                 android:indeterminate="false"
                 android:indeterminateDrawable="@drawable/video_loading"
-                android:padding="@dimen/dimen_10dp"
-                android:layout_marginTop="@dimen/dimen_120dp"/>
+                android:padding="@dimen/dimen_10dp"/>
 
 
         </RelativeLayout>
@@ -52,29 +53,29 @@
             android:id="@+id/tv_horiontal_gesture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:shadowColor="@color/black"
             android:shadowDx="1.0"
             android:shadowDy="1.0"
-            android:shadowColor="@color/black"
             android:textColor="@color/white"
             android:textSize="@dimen/dimen_64sp"
-            android:visibility="gone"
             android:textStyle="bold"
-            android:gravity="center"/>
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_vertical_gesture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center_horizontal"
             android:background="@drawable/black_bg"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/dimen_40dp"
             android:paddingLeft="@dimen/dimen_100dp"
             android:paddingRight="@dimen/dimen_100dp"
             android:paddingTop="@dimen/dimen_40dp"
-            android:paddingBottom="@dimen/dimen_40dp"
+            android:textColor="@color/white"
             android:textSize="@dimen/dimen_64sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
             android:visibility="gone"/>
 
         <FrameLayout
@@ -83,8 +84,8 @@
             android:layout_height="@dimen/dimen_70dp"
             android:layout_gravity="top"
             android:background="@color/player_panel_background_color"
-            android:paddingTop="@dimen/dimen_10dp"
-            android:paddingBottom="@dimen/dimen_10dp">
+            android:paddingBottom="@dimen/dimen_10dp"
+            android:paddingTop="@dimen/dimen_10dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -96,9 +97,9 @@
                     android:id="@+id/iv_player_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:paddingLeft="@dimen/dimen_15dp"
                     android:paddingRight="@dimen/dimen_15dp"
-                    android:layout_gravity="center_vertical"
                     android:src="@drawable/titlebar_return_white"/>
 
                 <TextView
@@ -123,9 +124,9 @@
                     android:id="@+id/iv_battery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dimen_10dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/ic_battery_10"/>
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:src="@drawable/bg_batterey_level"/>
 
                 <TextView
                     android:id="@+id/tv_sys_time"
@@ -146,8 +147,8 @@
             android:id="@+id/iv_player_center_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/player_pause_selector"
             android:layout_gravity="center"
+            android:background="@drawable/player_pause_selector"
             android:visibility="gone"/>
 
     </FrameLayout>
@@ -156,10 +157,10 @@
         android:id="@+id/ll_player_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_70dp"
-        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:background="@color/player_panel_background_color"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/cb_play_pause"
@@ -182,22 +183,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="03:00"
+            android:text="00:00"
             android:textColor="@color/white"
             android:textSize="@dimen/dimen_20sp"/>
 
         <SeekBar
             android:id="@+id/sb_player_seekbar"
+            style="@style/playerSeekBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/playerSeekBarStyle"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.0"
             android:indeterminate="false"
             android:max="100"
-            android:progress="0"
-            android:paddingRight="@dimen/dimen_10dp"
             android:paddingLeft="@dimen/dimen_10dp"
+            android:paddingRight="@dimen/dimen_10dp"
+            android:progress="0"
             android:thumbOffset="@dimen/dimen_10dp"
             />
 
@@ -205,21 +206,21 @@
             android:id="@+id/tv_total_video_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="15:00"
-            android:textSize="@dimen/dimen_20sp"
-            android:textColor="@color/white"
             android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_30dp"/>
+            android:layout_marginRight="@dimen/dimen_30dp"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_20sp"/>
 
         <TextView
             android:id="@+id/tv_bitstream"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_30dp"
             android:text="高清"
             android:textColor="@color/white"
-            android:textSize="@dimen/dimen_26sp"
-            android:layout_marginRight="@dimen/dimen_30dp"/>
+            android:textSize="@dimen/dimen_26sp"/>
 
     </LinearLayout>
 </RelativeLayout>

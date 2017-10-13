@@ -326,7 +326,7 @@ public class AlbumDetailActivity extends BaseActivity {
         mHightStreamPlay.setVisibility(View.GONE);
     }
 
-    private static class StreamType {
+    public static class StreamType {
         static final int SUPER = 1;
         static final int NORMAL = 2;
         static final int HIGHT = 3;
