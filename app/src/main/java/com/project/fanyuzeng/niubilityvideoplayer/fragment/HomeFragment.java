@@ -7,6 +7,7 @@ import android.widget.GridView;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.activity.DetailListActivity;
+import com.project.fanyuzeng.niubilityvideoplayer.activity.LiveActivity;
 import com.project.fanyuzeng.niubilityvideoplayer.adapter.HomeChannelAdapter;
 
 /**
@@ -45,7 +46,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         Log.d(TAG, "onItemClick " + "position:" + position);
         switch (position) {
             case 6:
-                // TODO: 2017/9/22 跳直播
+                LiveActivity.lanchAvtivity(getActivity());
                 break;
             case 7:
                 // TODO: 2017/9/22  跳收藏
@@ -54,7 +55,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 // TODO: 2017/9/22  跳历史记录
                 break;
             default:
-                DetailListActivity.lunchDetailList(getActivity(), position+1);
+                DetailListActivity.lunchDetailList(getActivity(), position + 1);
                 break;
         }
     }

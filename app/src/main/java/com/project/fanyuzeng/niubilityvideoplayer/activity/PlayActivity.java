@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -122,6 +123,7 @@ public class PlayActivity extends BaseActivity {
     private int mMaxVolume = 10;
     private int mCurrentVolum;
     private AudioManager mAudioManager;
+    private String mLiveTitle; //直播频道名字
 
 
     private class EventHandler extends Handler {
@@ -351,6 +353,9 @@ public class PlayActivity extends BaseActivity {
         if (mStreamType > 0) {
             updateStreamTypeText();
         }
+        if (!TextUtils.isEmpty(mLiveTitle)) {
+            mTvPlayerVideoName.setText(mLiveTitle); //直播Title设置
+        }
     }
 
     private void getExtraData() {
@@ -360,6 +365,7 @@ public class PlayActivity extends BaseActivity {
             mStreamType = intent.getIntExtra("type", 0);
             int currentPosition = intent.getIntExtra("currentPosition", 0);
             mVideo = intent.getParcelableExtra("video");
+            mLiveTitle = intent.getStringExtra("title");
             Log.d(TAG, "initViews " + "videoUrl:" + mVideoUrl + "   ,streamType:" + mStreamType + ",currentPosition:" + currentPosition + ",video:" + mVideo);
         }
     }
@@ -578,6 +584,15 @@ public class PlayActivity extends BaseActivity {
         return R.layout.activity_play;
     }
 
+    /**
+     * 由点播启动
+     *
+     * @param activity
+     * @param videoUrl
+     * @param video
+     * @param type
+     * @param currentPosition
+     */
     public static void lunchActivity(Activity activity, String videoUrl, Video video, int type, int currentPosition) {
         Intent intent = new Intent(activity, PlayActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -585,6 +600,21 @@ public class PlayActivity extends BaseActivity {
         intent.putExtra("video", video);
         intent.putExtra("type", type);
         intent.putExtra("currentPosition", currentPosition);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * 由直播启动
+     *
+     * @param activity
+     * @param url
+     * @param title
+     */
+    public static void lunchActivity(Activity activity, String url, String title) {
+        Intent intent = new Intent(activity, PlayActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("url", url);
+        intent.putExtra("title", title);
         activity.startActivity(intent);
     }
 
