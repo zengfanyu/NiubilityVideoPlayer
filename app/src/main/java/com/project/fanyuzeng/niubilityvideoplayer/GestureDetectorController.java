@@ -10,7 +10,7 @@ import android.view.MotionEvent;
  * Function:
  */
 
-public class GestureDetectorController implements GestureDetector.OnGestureListener {
+public class GestureDetectorController implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     private static final String TAG = "GestureDetectorCtro";
     public static final int SCROLL_NOTHING = 0x1000;
     public static final int SCROLL_VERTICAL_LEFT = 0x1001;
@@ -30,23 +30,26 @@ public class GestureDetectorController implements GestureDetector.OnGestureListe
 
     @Override
     public boolean onDown(MotionEvent e) {
+        Log.d(TAG, ">> onDown >> ");
         mCurrentType = SCROLL_NOTHING;
         return true;
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
+        Log.d(TAG, ">> onShowPress >> ");
 
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+        Log.d(TAG, ">> onSingleTapUp >> ");
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(TAG, ">> onScroll >> " + "mGestureListener:" + mGestureListener + ",mCurrentType:" + Integer.toHexString(mCurrentType));
+        Log.d(TAG, ">> onScroll >> " + "distanceX:" + distanceX + "e1x-e2x:" + (e1.getX() - e2.getX()) + ",distanceY:" + distanceY + ",e1y-e2y:" + (e1.getY() - e2.getY()));
         if (mGestureListener != null) {
             if (mCurrentType != SCROLL_NOTHING) {
                 switch (mCurrentType) {
@@ -93,16 +96,37 @@ public class GestureDetectorController implements GestureDetector.OnGestureListe
 
     @Override
     public void onLongPress(MotionEvent e) {
-
+        Log.d(TAG, ">> onLongPress >> ");
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        Log.d(TAG, ">> onFling >> " + "velocityX:" + velocityX + ",velocityY:" + velocityY);
         return true;
     }
 
     public boolean onTouchEvent(MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.d(TAG, ">> onSingleTapConfirmed >> ");
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        Log.d(TAG, ">> onDoubleTap >> ");
+        mCurrentType = SCROLL_NOTHING;
+        mGestureListener.onDoubleClick(e);
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        Log.d(TAG, ">> onDoubleTapEvent >> ");
+        return false;
     }
 
     public interface IGestureListener {
@@ -113,5 +137,7 @@ public class GestureDetectorController implements GestureDetector.OnGestureListe
         void onScrollVerticalLeft(float y1, float y2);
 
         void onScrollVerticalRight(float y1, float y2);
+
+        void onDoubleClick(MotionEvent e);
     }
 }

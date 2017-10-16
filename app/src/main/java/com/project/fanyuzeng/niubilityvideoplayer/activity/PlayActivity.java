@@ -233,9 +233,9 @@ public class PlayActivity extends BaseActivity {
 
                 updateHorizontalText(mScrollProgress);
 
-                Log.d(TAG,">> onScrollHorizontal >> " + "mScrollProgress:"+mScrollProgress+",seekBar progress:"+mPlayerSeekbar.getProgress());
+                Log.d(TAG, ">> onScrollHorizontal >> " + "mScrollProgress:" + mScrollProgress + ",seekBar progress:" + mPlayerSeekbar.getProgress());
 
-                if (mPlayerBottomLayout.getVisibility()==View.VISIBLE){
+                if (mPlayerBottomLayout.getVisibility() == View.VISIBLE) {
                     updateProgress();
                 }
             }
@@ -270,6 +270,11 @@ public class PlayActivity extends BaseActivity {
                     updateVerticalText(mCurrentVolum, mMaxVolume);
 
                 }
+            }
+
+            @Override
+            public void onDoubleClick(MotionEvent e) {
+                handlePlayPause();
             }
         });
     }
@@ -467,13 +472,13 @@ public class PlayActivity extends BaseActivity {
             }
 
             if (mIsHorizontalScroll) {
-                mIsHorizontalScroll=false;
+                mIsHorizontalScroll = false;
                 mVideoView.seekTo((int) mScrollProgress);
                 mTvHoriontalGesture.setVisibility(View.GONE);
             }
 
-            if (mIsVerticalScroll){
-                mIsVerticalScroll=false;
+            if (mIsVerticalScroll) {
+                mIsVerticalScroll = false;
                 mTvVerticalGesture.setVisibility(View.GONE);
             }
         }
