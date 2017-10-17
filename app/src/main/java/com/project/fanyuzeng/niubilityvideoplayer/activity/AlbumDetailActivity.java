@@ -23,6 +23,7 @@ import com.project.fanyuzeng.niubilityvideoplayer.api.ErrorInfo;
 import com.project.fanyuzeng.niubilityvideoplayer.api.SiteApi;
 import com.project.fanyuzeng.niubilityvideoplayer.api.onGetAlbumDetailListener;
 import com.project.fanyuzeng.niubilityvideoplayer.api.onGetVideoPlayUrlListener;
+import com.project.fanyuzeng.niubilityvideoplayer.db.FavoriteDAO;
 import com.project.fanyuzeng.niubilityvideoplayer.fragment.AlbumPlayGridFragment;
 import com.project.fanyuzeng.niubilityvideoplayer.model.Album;
 import com.project.fanyuzeng.niubilityvideoplayer.model.sohu.Video;
@@ -70,6 +71,7 @@ public class AlbumDetailActivity extends BaseActivity {
     private AlbumPlayGridFragment mFragment;
     private int mCurrentVideoPosition;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private FavoriteDAO mDAO;
 
     @Override
     protected void initViews() {
@@ -82,6 +84,8 @@ public class AlbumDetailActivity extends BaseActivity {
         setTitle(mAlbum.getTitle());
         setSupportArrowActionBar(true);
 
+        mDAO = new FavoriteDAO(this);
+        mIsFavor = mDAO.getAlbumById(mAlbum.getAlbumId(), mAlbum.getSite().getSiteId()) != null;
     }
 
     @OnClick({R2.id.id_btn_super, R2.id.id_btn_high, R2.id.id_btn_normal})
@@ -244,15 +248,17 @@ public class AlbumDetailActivity extends BaseActivity {
             case R.id.action_favor_item:
                 if (mIsFavor) {
                     mIsFavor = false;
-                    // TODO: 2017/9/30 收藏之后，存数据库
+                    //从数据库中删除
+                    mDAO.delete(mAlbum.getAlbumId(), mAlbum.getSite().getSiteId());
                     invalidateOptionsMenu();
                     Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.action_unfavor_item:
                 if (!mIsFavor) {
-                    mIsFavor = true;
-                    // TODO: 2017/9/30 取消收藏之后从数据库移除
+                    mIsFavor = true ;
+                    //添加到数据库中
+                    mDAO.add(mAlbum);
                     invalidateOptionsMenu();
                     Toast.makeText(this, "已收藏", Toast.LENGTH_SHORT).show();
                 }

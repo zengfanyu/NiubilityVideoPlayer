@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS_SETTINGS"/>
 
     <application
         android:name=".AppManager"
@@ -40,6 +41,9 @@
             android:theme="@style/AppThemeFullScreen">
         </activity>
         <activity android:name=".activity.LiveActivity">
+
+        </activity>
+        <activity android:name=".activity.FavoriteActivity">
 
         </activity>
     </application>

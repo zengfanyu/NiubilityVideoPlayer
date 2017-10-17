@@ -7,6 +7,7 @@ import android.widget.GridView;
 
 import com.project.fanyuzeng.niubilityvideoplayer.R;
 import com.project.fanyuzeng.niubilityvideoplayer.activity.DetailListActivity;
+import com.project.fanyuzeng.niubilityvideoplayer.activity.FavoriteActivity;
 import com.project.fanyuzeng.niubilityvideoplayer.activity.LiveActivity;
 import com.project.fanyuzeng.niubilityvideoplayer.adapter.HomeChannelAdapter;
 
@@ -49,7 +50,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 LiveActivity.lanchAvtivity(getActivity());
                 break;
             case 7:
-                // TODO: 2017/9/22  跳收藏
+                FavoriteActivity.lunchActivity(getActivity());
                 break;
             case 8:
                 // TODO: 2017/9/22  跳历史记录
